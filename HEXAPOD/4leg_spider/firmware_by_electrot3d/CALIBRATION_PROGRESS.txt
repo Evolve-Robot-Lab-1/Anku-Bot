@@ -1,0 +1,74 @@
+QUADRUPED ROBOT - SERVO CALIBRATION COMPLETE
+=============================================
+Date: 2026-01-18
+
+HARDWARE:
+- Arduino UNO
+- PCA9685 Servo Driver
+- 8 Servos (4 legs x 2 joints)
+
+CHANNEL MAPPING:
+================
+CH0 = Front Right HIP  [CALIBRATED]
+CH1 = Front Left HIP   [CALIBRATED]
+CH2 = Front Right LEG  [CALIBRATED]
+CH3 = Front Left LEG   [CALIBRATED]
+CH4 = Back Right HIP   [CALIBRATED]
+CH5 = Back Left HIP    [CALIBRATED]
+CH6 = Back Right LEG   [CALIBRATED]
+CH7 = Back Left LEG    [CALIBRATED]
+
+HOME POSITION (Standing):
+=========================
+CH0 Front Right Hip: 70°  (outward)
+CH1 Front Left Hip:  110° (outward)
+CH2 Front Right Leg: 90°  (down)
+CH3 Front Left Leg:  90°  (down)
+CH4 Back Right Hip:  110° (outward)
+CH5 Back Left Hip:   70°  (outward)
+CH6 Back Right Leg:  90°  (down)
+CH7 Back Left Leg:   90°  (down)
+
+SERVO BEHAVIOR:
+===============
+HIP servos (0,1,4,5):
+  - 90° = straight sideways
+  - Lower angle = forward
+  - Higher angle = backward
+
+LEG servos (2,3,6,7):
+  - 90° = straight down
+  - 45° = lift one way
+  - 135° = lift other way
+
+CALIBRATION COMPLETE!
+
+WORKING WALK CONFIGURATION:
+===========================
+hipSwing = 25
+legLift = 35 (FL/BR get +15 extra lift)
+
+FORWARD WALK - Hip directions:
+Step 1 (FR+BL lifted):
+  FR_HIP: 70 - 25 = 45
+  BL_HIP: 70 + 25 = 95
+  FL_HIP: 110 - 25 = 85
+  BR_HIP: 110 + 25 = 135
+
+Step 2 (FL+BR lifted):
+  FL_HIP: 110 + 25 = 135
+  BR_HIP: 110 - 25 = 85
+  FR_HIP: 70 + 25 = 95
+  BL_HIP: 70 - 25 = 45
+
+SERIAL COMMANDS:
+================
+w = forward (8 steps)
+s = backward (8 steps)
+a = left turn (6 steps)
+d = right turn (6 steps)
+6 = hello wave
+h = home position
+
+CONTROL SCRIPT: robot_control.py
+Run: python3 robot_control.py

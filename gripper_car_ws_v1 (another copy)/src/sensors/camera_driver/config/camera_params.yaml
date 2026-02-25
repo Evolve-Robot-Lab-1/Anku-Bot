@@ -1,0 +1,13 @@
+# Camera parameters for Raspberry Pi Camera
+v4l2_camera:
+  ros__parameters:
+    video_device: "/dev/video0"
+    image_size: [640, 480]
+    pixel_format: "YUYV"
+    camera_frame_id: "camera_link_optical"
+    io_method: "mmap"
+
+qr_scanner:
+  ros__parameters:
+    camera_topic: "/camera/image_raw"
+    scan_rate: 10.0  # Hz

@@ -1,0 +1,33 @@
+# Web Control Panel Configuration
+
+web_server:
+  ros__parameters:
+    # Server settings
+    port: 5000
+    host: "0.0.0.0"
+
+    # ROS bridge settings
+    rosbridge_port: 9090
+    video_server_port: 8080
+
+# Camera settings (for reference)
+camera:
+  ros__parameters:
+    format: "RGB888"
+    width: 640
+    height: 480
+
+# Control settings
+control:
+  ros__parameters:
+    # Default speeds
+    default_linear_speed: 0.3
+    default_angular_speed: 0.5
+    max_linear_speed: 1.0
+    max_angular_speed: 2.0
+
+    # Topics
+    cmd_vel_topic: "/cmd_vel"
+    cmd_vel_raw_topic: "/cmd_vel_raw"
+    arm_command_topic: "/arm/joint_commands"
+    camera_topic: "/camera/image_raw"

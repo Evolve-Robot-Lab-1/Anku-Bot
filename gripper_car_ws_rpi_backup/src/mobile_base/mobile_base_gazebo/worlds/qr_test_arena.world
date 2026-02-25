@@ -1,0 +1,449 @@
+<?xml version="1.0"?>
+<!--
+  QR Test Arena World
+  ====================
+  Extended test_arena with:
+  - Pickup station at origin with QR-labeled objects
+  - Delivery stations at corners matching locations.yaml
+  - Objects with distinct colors (QR textures can be added later)
+-->
+<sdf version="1.6">
+  <world name="qr_test_arena">
+
+    <!-- Physics settings -->
+    <physics type="ode">
+      <real_time_update_rate>1000.0</real_time_update_rate>
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+
+    <!-- Lighting -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- Ground plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- ==================== ARENA WALLS ==================== -->
+
+    <!-- North Wall -->
+    <model name="wall_north">
+      <static>true</static>
+      <pose>0 5 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>10 0.15 1</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>10 0.15 1</size></box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- South Wall -->
+    <model name="wall_south">
+      <static>true</static>
+      <pose>0 -5 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>10 0.15 1</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>10 0.15 1</size></box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- East Wall -->
+    <model name="wall_east">
+      <static>true</static>
+      <pose>5 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>0.15 10 1</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.15 10 1</size></box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- West Wall -->
+    <model name="wall_west">
+      <static>true</static>
+      <pose>-5 0 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>0.15 10 1</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.15 10 1</size></box>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ==================== PICKUP STATION ==================== -->
+
+    <!-- Pickup Table at origin -->
+    <model name="pickup_table">
+      <static>true</static>
+      <pose>1.0 0 0.35 0 0 0</pose>
+      <link name="link">
+        <!-- Table top -->
+        <collision name="table_top_collision">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box><size>0.6 0.6 0.05</size></box>
+          </geometry>
+        </collision>
+        <visual name="table_top_visual">
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <box><size>0.6 0.6 0.05</size></box>
+          </geometry>
+          <material>
+            <ambient>0.4 0.3 0.2 1</ambient>
+            <diffuse>0.6 0.5 0.4 1</diffuse>
+          </material>
+        </visual>
+        <!-- Table legs -->
+        <collision name="leg1_collision">
+          <pose>0.25 0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+        </collision>
+        <visual name="leg1_visual">
+          <pose>0.25 0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.3 0.2 0.1 1</ambient>
+            <diffuse>0.5 0.4 0.3 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg2_collision">
+          <pose>-0.25 0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+        </collision>
+        <visual name="leg2_visual">
+          <pose>-0.25 0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.3 0.2 0.1 1</ambient>
+            <diffuse>0.5 0.4 0.3 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg3_collision">
+          <pose>0.25 -0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+        </collision>
+        <visual name="leg3_visual">
+          <pose>0.25 -0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.3 0.2 0.1 1</ambient>
+            <diffuse>0.5 0.4 0.3 1</diffuse>
+          </material>
+        </visual>
+        <collision name="leg4_collision">
+          <pose>-0.25 -0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+        </collision>
+        <visual name="leg4_visual">
+          <pose>-0.25 -0.25 -0.175 0 0 0</pose>
+          <geometry>
+            <cylinder><radius>0.03</radius><length>0.35</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.3 0.2 0.1 1</ambient>
+            <diffuse>0.5 0.4 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- QR Cube for Station A (Red) -->
+    <model name="qr_cube_station_a">
+      <pose>1.0 0.15 0.425 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.00004167</ixx>
+            <iyy>0.00004167</iyy>
+            <izz>0.00004167</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.05 0.05 0.05</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.05 0.05 0.05</size></box>
+          </geometry>
+          <material>
+            <ambient>0.9 0.2 0.2 1</ambient>
+            <diffuse>1.0 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- QR Cube for Station B (Green) -->
+    <model name="qr_cube_station_b">
+      <pose>1.0 0 0.425 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.00004167</ixx>
+            <iyy>0.00004167</iyy>
+            <izz>0.00004167</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.05 0.05 0.05</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.05 0.05 0.05</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.9 0.2 1</ambient>
+            <diffuse>0.3 1.0 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- QR Cube for Station C (Blue) -->
+    <model name="qr_cube_station_c">
+      <pose>1.0 -0.15 0.425 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.00004167</ixx>
+            <iyy>0.00004167</iyy>
+            <izz>0.00004167</izz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry>
+            <box><size>0.05 0.05 0.05</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>0.05 0.05 0.05</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.9 1</ambient>
+            <diffuse>0.3 0.3 1.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ==================== DELIVERY STATIONS ==================== -->
+
+    <!-- Station A - Position (3, 3) - Red marker -->
+    <model name="station_a_marker">
+      <static>true</static>
+      <pose>3 3 0.01 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <cylinder><radius>0.3</radius><length>0.02</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.9 0.2 0.2 1</ambient>
+            <diffuse>1.0 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="station_a_sign">
+      <static>true</static>
+      <pose>3 3.5 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.05 0.3</size></box>
+          </geometry>
+          <material>
+            <ambient>0.9 0.2 0.2 1</ambient>
+            <diffuse>1.0 0.3 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Station B - Position (3, -3) - Green marker -->
+    <model name="station_b_marker">
+      <static>true</static>
+      <pose>3 -3 0.01 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <cylinder><radius>0.3</radius><length>0.02</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.2 0.9 0.2 1</ambient>
+            <diffuse>0.3 1.0 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="station_b_sign">
+      <static>true</static>
+      <pose>3 -3.5 0.5 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.05 0.3</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.9 0.2 1</ambient>
+            <diffuse>0.3 1.0 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Station C - Position (-3, 3) - Blue marker -->
+    <model name="station_c_marker">
+      <static>true</static>
+      <pose>-3 3 0.01 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <cylinder><radius>0.3</radius><length>0.02</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.9 1</ambient>
+            <diffuse>0.3 0.3 1.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="station_c_sign">
+      <static>true</static>
+      <pose>-3.5 3 0.5 0 0 1.57</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry>
+            <box><size>0.4 0.05 0.3</size></box>
+          </geometry>
+          <material>
+            <ambient>0.2 0.2 0.9 1</ambient>
+            <diffuse>0.3 0.3 1.0 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- ==================== OBSTACLES ==================== -->
+
+    <!-- Keep some obstacles for navigation testing -->
+
+    <!-- Center wall obstacle (reduced size for navigation) -->
+    <model name="obstacle_wall_center">
+      <static>true</static>
+      <pose>0 -1.5 0.4 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box><size>1.5 0.15 0.8</size></box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box><size>1.5 0.15 0.8</size></box>
+          </geometry>
+          <material>
+            <ambient>0.6 0.4 0.2 1</ambient>
+            <diffuse>0.8 0.5 0.3 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- Cylinder obstacle -->
+    <model name="obstacle_cylinder">
+      <static>true</static>
+      <pose>-1.5 -1 0.3 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <cylinder><radius>0.25</radius><length>0.6</length></cylinder>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <cylinder><radius>0.25</radius><length>0.6</length></cylinder>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>0.7 0.7 0.7 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+  </world>
+</sdf>

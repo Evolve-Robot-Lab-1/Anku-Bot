@@ -1,0 +1,1092 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="manipulator_mobile_bringup">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="0.010937 0.08215 -0.053701"
+        rpy="0 0 0" />
+      <mass
+        value="0.98856" />
+      <inertia
+        ixx="0.0037178"
+        ixy="-1.8329E-07"
+        ixz="8.2161E-07"
+        iyy="0.0054305"
+        iyz="2.2764E-06"
+        izz="0.0018727" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="front_right_link">
+    <inertial>
+      <origin
+        xyz="1.6167E-05 0.0002524 0.01609"
+        rpy="0 0 0" />
+      <mass
+        value="0.10753" />
+      <inertia
+        ixx="6.0298E-05"
+        ixy="2.1258E-10"
+        ixz="-7.2908E-11"
+        iyy="6.0303E-05"
+        iyz="8.3565E-07"
+        izz="0.00010816" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/front_right_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/front_right_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_right_joint"
+    type="continuous">
+    <origin
+      xyz="0.139571380499661 0.149302895205618 0.0161064867963429"
+      rpy="1.58824961931488 0 1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_right_link" />
+    <axis
+      xyz="0 0.017452406437321 0.99984769515639" />
+    <limit
+      effort="10"
+      velocity="10" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
+  </joint>
+  <link
+    name="front_left_link">
+    <inertial>
+      <origin
+        xyz="1.6167E-05 0.00030928 -0.016089"
+        rpy="0 0 0" />
+      <mass
+        value="0.10753" />
+      <inertia
+        ixx="6.0298E-05"
+        ixy="-2.15E-10"
+        ixz="6.5444E-11"
+        iyy="6.0303E-05"
+        iyz="-8.3565E-07"
+        izz="0.00010816" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/front_left_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/front_left_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="front_left_joint"
+    type="continuous">
+    <origin
+      xyz="-0.117093473270303 0.149302895064799 0.0161064867963391"
+      rpy="-1.58824961931486 0 -1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_left_link" />
+    <axis
+      xyz="0 0.0174524064372968 -0.999847695156391" />
+    <limit
+      effort="10"
+      velocity="10" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
+  </joint>
+  <link
+    name="back_right_link">
+    <inertial>
+      <origin
+        xyz="1.6167E-05 0.0002524 0.01609"
+        rpy="0 0 0" />
+      <mass
+        value="0.10753" />
+      <inertia
+        ixx="6.0298E-05"
+        ixy="2.1258E-10"
+        ixz="-7.2908E-11"
+        iyy="6.0303E-05"
+        iyz="8.3565E-07"
+        izz="0.00010816" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/back_right_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/back_right_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_right_joint"
+    type="continuous">
+    <origin
+      xyz="0.139571380499664 -0.0356971047943816 0.0161064867963398"
+      rpy="1.58824961931488 0 1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_right_link" />
+    <axis
+      xyz="0 0.0174524064373385 0.99984769515639" />
+    <limit
+      effort="10"
+      velocity="10" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
+  </joint>
+  <link
+    name="back_left_link">
+    <inertial>
+      <origin
+        xyz="1.6167E-05 0.00030928 -0.016089"
+        rpy="0 0 0" />
+      <mass
+        value="0.10753" />
+      <inertia
+        ixx="6.0298E-05"
+        ixy="-2.15E-10"
+        ixz="6.5444E-11"
+        iyy="6.0303E-05"
+        iyz="-8.3565E-07"
+        izz="0.00010816" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/back_left_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/back_left_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="back_left_joint"
+    type="continuous">
+    <origin
+      xyz="-0.117093473270303 -0.0356971049352009 0.0161064867963398"
+      rpy="-1.58824961931486 0 -1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="back_left_link" />
+    <axis
+      xyz="0 0.0174524064372968 -0.999847695156391" />
+    <limit
+      effort="10"
+      velocity="10" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
+  </joint>
+  <link
+    name="arm_base_link">
+    <inertial>
+      <origin
+        xyz="-0.0011337 -0.0001156 -0.021927"
+        rpy="0 0 0" />
+      <mass
+        value="0.093638" />
+      <inertia
+        ixx="0.00012547"
+        ixy="2.5159E-08"
+        ixz="-1.5661E-06"
+        iyy="0.00013089"
+        iyz="-1.4418E-07"
+        izz="0.00020147" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/arm_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/arm_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="arm_base_joint"
+    type="fixed">
+    <origin
+      xyz="0.008721929418942 0.132635307732567 0.127668652249162"
+      rpy="-3.14159265358978 0 -1.5707963267949" />
+    <parent
+      link="base_link" />
+    <child
+      link="arm_base_link" />
+    <axis
+      xyz="0 0 0" />
+    <limit
+      effort="10"
+      velocity="10" />
+    <dynamics
+      damping="0.1"
+      friction="0.1" />
+  </joint>
+  <link
+    name="link_1">
+    <inertial>
+      <origin
+        xyz="0.002243 0.0075762 0.018765"
+        rpy="0 0 0" />
+      <mass
+        value="0.072312" />
+      <inertia
+        ixx="4.9568E-05"
+        ixy="-1.5508E-06"
+        ixz="-6.3994E-06"
+        iyy="6.2445E-05"
+        iyz="-6.7489E-06"
+        izz="5.6938E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_1"
+    type="continuous">
+    <origin
+      xyz="-0.000766397209457176 0 -0.0554378345472065"
+      rpy="3.14159265358979 0 3.08786207777782" />
+    <parent
+      link="arm_base_link" />
+    <child
+      link="link_1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_2">
+    <inertial>
+      <origin
+        xyz="-0.00012933 -0.0043331 0.059293"
+        rpy="0 0 0" />
+      <mass
+        value="0.056531" />
+      <inertia
+        ixx="9.4195E-05"
+        ixy="-2.9887E-10"
+        ixz="-1.4758E-09"
+        iyy="9.7021E-05"
+        iyz="-2.8902E-10"
+        izz="7.2804E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_2"
+    type="continuous">
+    <origin
+      xyz="0.0139185063019795 0 0.0402764801759031"
+      rpy="0 0.138936837776739 0" />
+    <parent
+      link="link_1" />
+    <child
+      link="link_2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      upper="2"
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_3">
+    <inertial>
+      <origin
+        xyz="0.03808 0.013781 -0.00091997"
+        rpy="0 0 0" />
+      <mass
+        value="0.05696" />
+      <inertia
+        ixx="1.1086E-05"
+        ixy="-9.9973E-07"
+        ixz="1.4846E-06"
+        iyy="6.7149E-05"
+        iyz="5.5765E-08"
+        izz="6.3613E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_3"
+    type="continuous">
+    <origin
+      xyz="0 0 0.120000000000002"
+      rpy="-0.00838511430032749 -0.188216620663566 -0.00131305365388134" />
+    <parent
+      link="link_2" />
+    <child
+      link="link_3" />
+    <axis
+      xyz="0.00128986407342656 -0.999961923064159 -0.00863068204148897" />
+    <limit
+      upper="2"
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="link_4">
+    <inertial>
+      <origin
+        xyz="0.020256 -0.0057436 0.0049043"
+        rpy="0 0 0" />
+      <mass
+        value="0.018176" />
+      <inertia
+        ixx="2.8956E-06"
+        ixy="6.016E-07"
+        ixz="1.9471E-08"
+        iyy="5.3577E-06"
+        iyz="-1.8766E-08"
+        izz="4.262E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/link_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint_4"
+    type="continuous">
+    <origin
+      xyz="0.0876109660514479 0.0136270386972644 -0.00747960356766325"
+      rpy="-0.0931433145016149 0.0170830098656705 0.0021229764586867" />
+    <parent
+      link="link_3" />
+    <child
+      link="link_4" />
+    <axis
+      xyz="0.999958498512701 0.000241202700431577 -0.00910730879467869" />
+    <limit
+      upper="2"
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="gripper_base_link">
+    <inertial>
+      <origin
+        xyz="0.023551 -0.014074 0.0056942"
+        rpy="0 0 0" />
+      <mass
+        value="0.015721" />
+      <inertia
+        ixx="2.5605E-06"
+        ixy="-1.4166E-06"
+        ixz="-1.3765E-06"
+        iyy="7.2536E-06"
+        iyz="-3.5787E-07"
+        izz="8.1096E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/gripper_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/gripper_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_base_joint"
+    type="revolute">
+    <origin
+      xyz="0.029997 4.7879E-05 0.0047268"
+      rpy="-0.016991 0.18173 -0.0011785" />
+    <parent
+      link="link_4" />
+    <child
+      link="gripper_base_link" />
+    <axis
+      xyz="0 0.99996 0.0087265" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_gear_link">
+    <inertial>
+      <origin
+        xyz="0.0055788 0.00060197 0.0017384"
+        rpy="0 0 0" />
+      <mass
+        value="0.0026416" />
+      <inertia
+        ixx="9.0046E-08"
+        ixy="9.2574E-09"
+        ixz="4.7431E-21"
+        iyy="3.6424E-07"
+        iyz="-3.7485E-20"
+        izz="4.4724E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/right_gear_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/right_gear_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_gear_joint"
+    type="revolute">
+    <origin
+      xyz="0.038 -0.025124 0.014043"
+      rpy="0.0065473 0.0057695 -0.72232" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="right_gear_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+    <mimic
+      joint="left_gear_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="right_finger_link">
+    <inertial>
+      <origin
+        xyz="0.026893 0.0045132 -0.0042469"
+        rpy="0 0 0" />
+      <mass
+        value="0.0053975" />
+      <inertia
+        ixx="1.8308E-07"
+        ixy="-3.7341E-07"
+        ixz="-6.2523E-12"
+        iyy="1.5958E-06"
+        iyz="1.1723E-11"
+        izz="1.7139E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/right_finger_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.52941 0.54902 0.54902 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/right_finger_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_finger_joint"
+    type="revolute">
+    <origin
+      xyz="0.030749 0 -0.0087585"
+      rpy="-3.1416 0 1.1008" />
+    <parent
+      link="right_gear_link" />
+    <child
+      link="right_finger_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+    <mimic
+      joint="left_gear_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="left_gear_link">
+    <inertial>
+      <origin
+        xyz="0.0056831 -0.00040658 0.00014126"
+        rpy="0 0 0" />
+      <mass
+        value="0.0025659" />
+      <inertia
+        ixx="9.0729E-08"
+        ixy="-1.9117E-08"
+        ixz="2.1842E-19"
+        iyy="3.6228E-07"
+        iyz="-4.5692E-20"
+        izz="4.4616E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/left_gear_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/left_gear_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_gear_joint"
+    type="revolute">
+    <origin
+      xyz="0.038 0.0017615 0.015875"
+      rpy="0.0079632 -0.0035696 0.42139" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="left_gear_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_finger_link">
+    <inertial>
+      <origin
+        xyz="0.026893 0.0045132 -0.0042469"
+        rpy="0 0 0" />
+      <mass
+        value="0.0053975" />
+      <inertia
+        ixx="1.8308E-07"
+        ixy="-3.7341E-07"
+        ixz="-6.2879E-12"
+        iyy="1.5958E-06"
+        iyz="1.1822E-11"
+        izz="1.7139E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/left_finger_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.52941 0.54902 0.54902 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/left_finger_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_finger_joint"
+    type="revolute">
+    <origin
+      xyz="0.030729 0.0010754 -0.0018618"
+      rpy="0 0 -0.82939" />
+    <parent
+      link="left_gear_link" />
+    <child
+      link="left_finger_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+    <mimic
+      joint="left_gear_joint"
+      multiplier="1"
+      offset="0" />
+  </joint>
+  <link
+    name="right_link">
+    <inertial>
+      <origin
+        xyz="0.0155 -4.1633E-16 0.00094259"
+        rpy="0 0 0" />
+      <mass
+        value="0.00079876" />
+      <inertia
+        ixx="3.6325E-09"
+        ixy="1.6885E-22"
+        ixz="1.2558E-22"
+        iyy="1.0292E-07"
+        iyz="-6.27E-22"
+        izz="1.0442E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/right_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/right_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_joint"
+    type="revolute">
+    <origin
+      xyz="0.058 -0.017131 0.014908"
+      rpy="0.0066193 0.0056868 -0.70976" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="right_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+    <mimic
+      joint="left_gear_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="left_link">
+    <inertial>
+      <origin
+        xyz="0.0155 -5.5511E-16 0.0013113"
+        rpy="0 0 0" />
+      <mass
+        value="0.00079876" />
+      <inertia
+        ixx="3.6325E-09"
+        ixy="-8.3545E-23"
+        ixz="1.1071E-22"
+        iyy="1.0292E-07"
+        iyz="-6.3197E-22"
+        izz="1.0442E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/left_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.79216 0.81961 0.93333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://mobile_manipulator_bringup/meshes/left_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_joint"
+    type="revolute">
+    <origin
+      xyz="0.058 -0.0071279 0.014627"
+      rpy="0.0078253 -0.0038625 0.4585" />
+    <parent
+      link="gripper_base_link" />
+    <child
+      link="left_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="2"
+      effort="5"
+      velocity="0" />
+    <mimic
+      joint="left_gear_joint"
+      multiplier="1"
+      offset="0" />
+  </joint>
+
+  <!-- Gazebo friction and material properties -->
+  <gazebo reference="base_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <gazebo reference="front_right_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+  <gazebo reference="front_left_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+  <gazebo reference="back_right_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+  <gazebo reference="back_left_link">
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+  <!-- Joint State Publisher Plugin -->
+  <gazebo>
+    <plugin name="gazebo_ros_joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <update_rate>50</update_rate>
+      <joint_name>front_left_joint</joint_name>
+      <joint_name>front_right_joint</joint_name>
+      <joint_name>back_left_joint</joint_name>
+      <joint_name>back_right_joint</joint_name>
+      <joint_name>joint_1</joint_name>
+      <joint_name>joint_2</joint_name>
+      <joint_name>joint_3</joint_name>
+      <joint_name>joint_4</joint_name>
+      <joint_name>gripper_base_joint</joint_name>
+      <joint_name>left_gear_joint</joint_name>
+      <joint_name>right_gear_joint</joint_name>
+      <joint_name>left_finger_joint</joint_name>
+      <joint_name>right_finger_joint</joint_name>
+      <joint_name>left_joint</joint_name>
+      <joint_name>right_joint</joint_name>
+    </plugin>
+  </gazebo>
+
+  <!-- Differential Drive Plugin for 4 wheels -->
+  <gazebo>
+    <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+      <!-- Number of wheel pairs -->
+      <num_wheel_pairs>2</num_wheel_pairs>
+
+      <!-- wheels0 (front wheels) -->
+      <left_joint>front_left_joint</left_joint>
+      <right_joint>front_right_joint</right_joint>
+
+      <!-- wheels1 (back wheels) -->
+      <left_joint>back_left_joint</left_joint>
+      <right_joint>back_right_joint</right_joint>
+
+      <!-- kinematics -->
+      <wheel_separation>0.35</wheel_separation>
+      <wheel_diameter>0.15</wheel_diameter>
+
+      <!-- limits -->
+      <max_wheel_torque>1000</max_wheel_torque>
+      <max_wheel_acceleration>5.0</max_wheel_acceleration>
+
+      <!-- output -->
+      <publish_odom>true</publish_odom>
+      <publish_odom_tf>true</publish_odom_tf>
+      <publish_wheel_tf>true</publish_wheel_tf>
+
+      <!-- odometry covariance -->
+      <covariance_x>0.0001</covariance_x>
+      <covariance_y>0.0001</covariance_y>
+      <covariance_yaw>0.01</covariance_yaw>
+
+      <!-- frames -->
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+
+      <!-- topic names -->
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+    </plugin>
+  </gazebo>
+</robot>

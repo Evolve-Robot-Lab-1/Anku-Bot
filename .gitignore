@@ -1,0 +1,20 @@
+# ROS build artifacts
+build/
+install/
+log/
+
+# Python
+__pycache__/
+*.pyc
+
+# IDE
+.claude/
+
+# Large files (exceed GitHub 100MB limit)
+*.SLDPRT
+
+# Archives
+*.zip
+
+# OS
+.DS_Store

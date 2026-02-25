@@ -1,0 +1,511 @@
+/* Naval Inspection Robot - Control Panel Styles */
+
+:root {
+    --primary-color: #2196F3;
+    --secondary-color: #4CAF50;
+    --danger-color: #f44336;
+    --warning-color: #ff9800;
+    --dark-bg: #1a1a2e;
+    --panel-bg: #16213e;
+    --text-color: #eee;
+    --border-color: #0f3460;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* ============================================================
+   Header
+   ============================================================ */
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 20px;
+    background-color: var(--panel-bg);
+    border-radius: 10px;
+    margin-bottom: 12px;
+}
+
+header h1 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+
+.connection-status {
+    display: flex;
+    gap: 10px;
+}
+
+.status-indicator {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-indicator.connected {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.status-indicator.disconnected {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* ============================================================
+   Main Layout: 60% camera / 40% controls
+   ============================================================ */
+
+main {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 12px;
+    align-items: start;
+}
+
+@media (max-width: 1000px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   Panels
+   ============================================================ */
+
+.panel {
+    background-color: var(--panel-bg);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.panel h2 {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* ============================================================
+   Dual Camera
+   ============================================================ */
+
+.dual-camera-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.camera-wrapper {
+    position: relative;
+}
+
+.camera-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: #0f0;
+    font-family: monospace;
+}
+
+.camera-box {
+    position: relative;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.fps-counter {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: #0f0;
+    font-family: monospace;
+}
+
+/* Camera controls row (zoom + tilt under each camera) */
+.cam-controls-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+}
+
+.zoom-control, .tilt-control {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.zoom-control label, .tilt-control label {
+    font-size: 0.78rem;
+    white-space: nowrap;
+    min-width: 55px;
+}
+
+.zoom-control input[type="range"], .tilt-control input[type="range"] {
+    flex: 1;
+    height: 6px;
+    border-radius: 3px;
+    background: #3a3a5a;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.zoom-control input[type="range"]::-webkit-slider-thumb,
+.tilt-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+}
+
+.tilt-control input[type="range"]::-webkit-slider-thumb {
+    background: var(--warning-color);
+}
+
+/* Obstacle Avoidance Panel */
+.obstacle-panel {
+    border-left: 3px solid var(--secondary-color);
+}
+
+.obstacle-panel h2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-obstacle-toggle {
+    padding: 4px 14px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    background-color: var(--secondary-color);
+    color: white;
+    border-radius: 12px;
+    min-width: 44px;
+}
+
+.btn-obstacle-toggle.obstacle-off {
+    background-color: #666;
+    color: #ccc;
+}
+
+.obstacle-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.obstacle-state {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #666;
+    padding: 6px 16px;
+    background: #2a2a4a;
+    border-radius: 6px;
+    text-align: center;
+    min-width: 140px;
+}
+
+.obstacle-distances {
+    display: flex;
+    gap: 16px;
+    font-size: 0.82rem;
+    font-family: monospace;
+}
+
+.dist-item {
+    padding: 4px 10px;
+    background: #2a2a4a;
+    border-radius: 4px;
+}
+
+/* ============================================================
+   D-Pad (3x3 grid)
+   ============================================================ */
+
+.dpad-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.d-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    gap: 4px;
+}
+
+.btn-direction {
+    width: 60px;
+    height: 60px;
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3a3a5a;
+    border-radius: 8px;
+    user-select: none;
+}
+
+.btn-direction:active {
+    background-color: var(--primary-color);
+}
+
+.btn-fwd-left  { grid-column: 1; grid-row: 1; font-size: 1.2rem; }
+.btn-up        { grid-column: 2; grid-row: 1; }
+.btn-fwd-right { grid-column: 3; grid-row: 1; font-size: 1.2rem; }
+.btn-left      { grid-column: 1; grid-row: 2; }
+.btn-center    { grid-column: 2; grid-row: 2; font-size: 0.7rem; background-color: var(--danger-color); }
+.btn-right     { grid-column: 3; grid-row: 2; }
+.btn-bwd-left  { grid-column: 1; grid-row: 3; font-size: 1.2rem; }
+.btn-down      { grid-column: 2; grid-row: 3; }
+.btn-bwd-right { grid-column: 3; grid-row: 3; font-size: 1.2rem; }
+
+/* Strafe row */
+.strafe-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.btn-strafe {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+    background-color: #3a3a5a;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-strafe:active {
+    background-color: var(--primary-color);
+}
+
+.btn-mode {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.btn-mode.mode-turn {
+    background-color: var(--warning-color);
+    color: #111;
+}
+
+/* ============================================================
+   Speed Buttons
+   ============================================================ */
+
+.speed-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-speed {
+    flex: 1;
+    padding: 12px;
+    font-size: 0.95rem;
+    font-weight: bold;
+    background-color: #3a3a5a;
+    border-radius: 8px;
+}
+
+.btn-speed.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* ============================================================
+   E-STOP
+   ============================================================ */
+
+.estop-panel {
+    padding: 10px 14px;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 18px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.btn-estop-active {
+    animation: pulse 0.5s infinite;
+    background-color: #b71c1c !important;
+}
+
+@keyframes pulse {
+    0%  { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+    70% { box-shadow: 0 0 0 12px rgba(244, 67, 54, 0); }
+    100%{ box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+}
+
+/* ============================================================
+   Buttons (shared)
+   ============================================================ */
+
+.btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    background-color: #3a3a5a;
+    color: var(--text-color);
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-success { background-color: var(--secondary-color); color: white; }
+.btn-danger  { background-color: var(--danger-color); color: white; }
+.btn-warning { background-color: var(--warning-color); color: black; }
+
+/* ============================================================
+   Status Panel
+   ============================================================ */
+
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: #2a2a4a;
+    border-radius: 5px;
+}
+
+.status-label {
+    color: #888;
+    font-size: 0.82rem;
+}
+
+.status-value {
+    font-weight: bold;
+    font-size: 0.82rem;
+}
+
+/* ============================================================
+   Keyboard Shortcuts Panel
+   ============================================================ */
+
+.shortcuts-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+kbd {
+    display: inline-block;
+    padding: 2px 7px;
+    font-size: 0.75rem;
+    font-family: monospace;
+    color: #eee;
+    background: #3a3a5a;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+
+footer {
+    text-align: center;
+    padding: 12px;
+    color: #666;
+    font-size: 0.8rem;
+    margin-top: 12px;
+}
+
+/* ============================================================
+   Mobile Responsive
+   ============================================================ */
+
+@media (max-width: 700px) {
+    .dual-camera-container {
+        grid-template-columns: 1fr;
+    }
+
+    .d-pad {
+        grid-template-columns: repeat(3, 65px);
+        grid-template-rows: repeat(3, 65px);
+    }
+
+    .btn-direction {
+        width: 65px;
+        height: 65px;
+    }
+
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .speed-buttons {
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,168 @@
+SPIDER ROBOT - SERVO TEST DATA
+==============================
+Date: _______________
+
+INSTRUCTIONS:
+1. Upload servo_individual_test.ino
+2. Open Serial Monitor (9600 baud)
+3. Test each servo (0-7) and record observations below
+4. For each servo, find:
+   - Physical center (where leg/hip looks neutral)
+   - Direction: what happens when angle INCREASES?
+   - Safe range: min and max angles before hitting frame
+
+
+SERVO LAYOUT REFERENCE:
+        FRONT
+   [1]---+---[0]    (HIP: controls forward/backward)
+   [3]   |   [2]    (LEG: controls up/down)
+         |
+   [5]---+---[4]    (HIP: controls forward/backward)
+   [7]   |   [6]    (LEG: controls up/down)
+        BACK
+
+
+=======================================================================
+CH0: FRONT RIGHT HIP
+=======================================================================
+Physical Center Angle: ______ (angle where leg points straight sideways)
+At 90 degrees, leg points: _______________
+Increasing angle (90->135): leg moves _____________ (forward/backward)
+Decreasing angle (90->45):  leg moves _____________ (forward/backward)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH1: FRONT LEFT HIP
+=======================================================================
+Physical Center Angle: ______
+At 90 degrees, leg points: _______________
+Increasing angle (90->135): leg moves _____________ (forward/backward)
+Decreasing angle (90->45):  leg moves _____________ (forward/backward)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH2: FRONT RIGHT LEG
+=======================================================================
+Physical Center Angle: ______ (angle where leg is level/neutral)
+At 90 degrees, leg is: _______________
+Increasing angle (90->135): leg moves _____________ (up/down)
+Decreasing angle (90->45):  leg moves _____________ (up/down)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH3: FRONT LEFT LEG
+=======================================================================
+Physical Center Angle: ______
+At 90 degrees, leg is: _______________
+Increasing angle (90->135): leg moves _____________ (up/down)
+Decreasing angle (90->45):  leg moves _____________ (up/down)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH4: BACK RIGHT HIP
+=======================================================================
+Physical Center Angle: ______
+At 90 degrees, leg points: _______________
+Increasing angle (90->135): leg moves _____________ (forward/backward)
+Decreasing angle (90->45):  leg moves _____________ (forward/backward)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH5: BACK LEFT HIP
+=======================================================================
+Physical Center Angle: ______
+At 90 degrees, leg points: _______________
+Increasing angle (90->135): leg moves _____________ (forward/backward)
+Decreasing angle (90->45):  leg moves _____________ (forward/backward)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH6: BACK RIGHT LEG
+=======================================================================
+Physical Center Angle: ______
+At 90 degrees, leg is: _______________
+Increasing angle (90->135): leg moves _____________ (up/down)
+Decreasing angle (90->45):  leg moves _____________ (up/down)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+CH7: BACK LEFT LEG
+=======================================================================
+Physical Center Angle: ______
+At 90 degrees, leg is: _______________
+Increasing angle (90->135): leg moves _____________ (up/down)
+Decreasing angle (90->45):  leg moves _____________ (up/down)
+Safe Min: ______  Safe Max: ______
+Notes: _______________________________________________________________
+
+
+=======================================================================
+SUMMARY TABLE
+=======================================================================
+CH | Servo Name      | Center | Inc=  | Dec=  | Min | Max
+---|-----------------|--------|-------|-------|-----|----
+0  | FR Hip          |        |       |       |     |
+1  | FL Hip          |        |       |       |     |
+2  | FR Leg          |        |       |       |     |
+3  | FL Leg          |        |       |       |     |
+4  | BR Hip          |        |       |       |     |
+5  | BL Hip          |        |       |       |     |
+6  | BR Leg          |        |       |       |     |
+7  | BL Leg          |        |       |       |     |
+
+
+=======================================================================
+HOME POSITION VALUES (for standing)
+=======================================================================
+Based on test, fill in the home angles:
+
+HIP angles (for V-shape stance):
+  FR_HIP (CH0): ______
+  FL_HIP (CH1): ______
+  BR_HIP (CH4): ______
+  BL_HIP (CH5): ______
+
+LEG angles (for standing height):
+  FR_LEG (CH2): ______
+  FL_LEG (CH3): ______
+  BR_LEG (CH6): ______
+  BL_LEG (CH7): ______
+
+
+=======================================================================
+OBSERVATIONS FOR WALKING
+=======================================================================
+To make FR leg step forward, I need to:
+  - FR_HIP: _____________ angle (increase/decrease)
+  - FR_LEG: _____________ angle to lift (increase/decrease)
+
+Diagonal pairs that should move together:
+  Pair A: FR + BL
+  Pair B: FL + BR
+
+Match original MiniKame?  YES / NO / PARTIALLY
+If no, what's different? _____________________________________________
+
+
+=======================================================================
+DECISION
+=======================================================================
+[ ] Keep current walk_test.ino code (step-based)
+[ ] Port original MiniKame oscillator code
+[ ] Create hybrid (oscillators with corrected angles)
+
+Reason: ______________________________________________________________

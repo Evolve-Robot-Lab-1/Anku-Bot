@@ -1,0 +1,21 @@
+# Pick and Place Application Parameters
+# ======================================
+
+pick_and_place:
+  ros__parameters:
+    # Arm joint names (must match URDF)
+    arm_joints:
+      - joint_1
+      - joint_2
+      - joint_3
+      - joint_4
+      - gripper_base_joint
+      - left_gear_joint
+
+    # Motion timing (seconds)
+    motion_time: 2.0      # Time for arm motions
+    gripper_time: 1.0     # Time for gripper open/close
+
+    # Gripper positions (radians)
+    gripper_open: 0.5
+    gripper_closed: 0.0

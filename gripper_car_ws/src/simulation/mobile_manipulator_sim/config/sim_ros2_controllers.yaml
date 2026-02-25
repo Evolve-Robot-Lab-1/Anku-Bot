@@ -1,0 +1,46 @@
+# ros2_control configuration for Gazebo simulation
+# Uses static_ prefix for joint names (matching mobile_manipulator URDF)
+
+controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    gripper_controller:
+      type: position_controllers/GripperActionController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+arm_controller:
+  ros__parameters:
+    joints:
+      - static_joint_1
+      - static_joint_2
+      - static_joint_3
+      - static_joint_4
+      - static_gripper_base_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    action_monitors_rate: 20.0
+    allow_partial_joints_goal: false
+    open_loop_control: false
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
+
+gripper_controller:
+  ros__parameters:
+    default: true
+    joint: static_left_gear_joint
+    action_monitor_rate: 20.0
+    goal_tolerance: 0.01
+    max_effort: 100.0
+    allow_stalling: true
+    stall_velocity_threshold: 0.01
+    stall_timeout: 2.0

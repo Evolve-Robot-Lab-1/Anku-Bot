@@ -1,0 +1,32 @@
+====================================
+  ANKU BOT - Motor Pin Mappings
+  Arduino Mega
+====================================
+
+FL (Front Left) - L293D
+  ENA  = Pin 8   (PWM)
+  IN1  = Pin 40
+  IN2  = Pin 41
+
+FR (Front Right) - L293D
+  ENB  = Pin 2   (PWM)
+  IN3  = Pin 22
+  IN4  = Pin 23
+
+BL (Back Left) - L293D
+  EN1  = Pin 4   (PWM)
+  IN1  = Pin 7
+  IN2  = Pin 9
+
+BR (Back Right) - BTS7960
+  RPWM = Pin 10
+  LPWM = Pin 11
+  R_EN = 5V (jumpered)
+  L_EN = 5V (jumpered)
+
+====================================
+  Notes
+====================================
+- BL originally had BTS7960 (pins 4,7) but driver was faulty, replaced with L293D
+- All L293D: VS=motor power, VSS=5V, GND shared with Mega
+- All BTS7960: VCC=5V, GND shared with Mega, B+/B-=motor power

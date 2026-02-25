@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="manipulator_mobile_bringup">
+    <xacro:arg name="initial_positions_file" default="initial_positions.yaml" />
+
+    <!-- Import manipulator_mobile_bringup urdf file -->
+    <xacro:include filename="$(find mobile_manipulator_bringup)/urdf/manipulator_mobile_with_arm.urdf" />
+
+    <!-- Import control_xacro -->
+    <xacro:include filename="manipulator_mobile_bringup.ros2_control.xacro" />
+
+
+    <xacro:manipulator_mobile_bringup_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/>
+
+</robot>

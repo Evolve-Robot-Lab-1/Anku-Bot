@@ -1,0 +1,69 @@
+# Session Log - Feb 13, 2026
+# OBSBOT Meet SE Camera Testing
+
+## 1. PC Testing (Laptop: ash, 192.168.1.26)
+
+### Camera Detection
+- OBSBOT Meet SE detected via USB: Bus 001, Device ID 3564:fefe
+- Video devices: /dev/video4, /dev/video5
+
+### Viewer Testing
+- Cheese: works but low quality
+- ffplay: frozen image, not suitable
+- GStreamer: BEST - live 1080p feed
+- Working command:
+  gst-launch-1.0 v4l2src device=/dev/video4 ! image/jpeg,width=1920,height=1080,framerate=30/1 ! jpegdec ! videoconvert ! autovideosink sync=false
+
+### Camera Controls Tested
+- Zoom: set to 6/12
+- Pan: tested left (-108000) and right (108000)
+- Tilt: available but kept at 0
+
+### Second Camera Test (on PC)
+- Swapped first camera with second OBSBOT Meet SE
+- Same USB port, detected as same device
+- Same settings applied, works identically
+
+## 2. RPi Testing (pi@192.168.1.10, Ubuntu 22.04, RPi 4B 4GB)
+
+### SSH Connection
+- Username: pi, Password: 123
+- WiFi: EVOLVE ROBOT LAB 2.4
+- WiFi is intermittent, drops occasionally
+
+### Single Camera Test
+- OBSBOT detected on RPi as /dev/video0
+- Captured test image: 1080p MJPEG (obsbot_rpi_test.jpg)
+- ffmpeg capture works
+
+### Web Streaming (Flask + OpenCV)
+- MJPEG multipart streaming: DOES NOT WORK (shows single frame)
+- JS frame fetching: WORKS
+- Threaded camera capture for performance
+- Port: 8090 (8080 occupied by ROS web_video_server)
+
+### Dual Camera Setup
+- Camera 1 (Left):  /dev/video0 (usb-0000:01:00.0-1.2)
+- Camera 2 (Right): /dev/video2 (usb-0000:01:00.0-1.1)
+- Dual side-by-side view with FPS counter
+- URL: http://192.168.1.10:8090/
+- Script: cam_stream.py
+
+### ROS2 Already Running on RPi
+- web_video_server (port 8080)
+- serial_bridge_node
+- obstacle_avoidance_node
+- web_control_panel
+- rosbridge_websocket
+
+## 3. USB Port Availability on RPi
+- USB 2.0 Hub (VIA Labs, 4 ports): 2 used (cameras), 2 FREE
+- USB 3.0 (4 ports): ALL FREE
+- YDLidar-SDK already installed on RPi
+- LiDAR connection planned for later
+
+## Files in OBS_CAMERA/
+- camera_config.txt    : Full camera configuration
+- cam_stream.py        : Dual camera web streaming script
+- obsbot_rpi_test.jpg  : Test capture from RPi
+- session_log.txt      : This file

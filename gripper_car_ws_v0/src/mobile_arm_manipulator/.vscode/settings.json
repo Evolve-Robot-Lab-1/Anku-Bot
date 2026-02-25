@@ -1,0 +1,8 @@
+// settings.json
+{
+    // other settings
+    "urdf-visualizer.packages": {
+        "mobile_arm_manipulator": "${workspaceFolder}"
+    },
+    // other settings
+  }

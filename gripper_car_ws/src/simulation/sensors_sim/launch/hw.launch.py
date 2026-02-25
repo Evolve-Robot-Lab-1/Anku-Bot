@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+"""Sensors hardware passthrough launch (placeholder)"""
+from launch import LaunchDescription
+
+def generate_launch_description():
+    return LaunchDescription()

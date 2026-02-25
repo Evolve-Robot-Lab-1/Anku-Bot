@@ -1,0 +1,5 @@
+{
+    "urdf-visualizer.packages": {
+        "mobile_manipulator_bringup": "${workspaceFolder}"
+    }
+}

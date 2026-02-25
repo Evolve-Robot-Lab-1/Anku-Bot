@@ -1,0 +1,490 @@
+/* Robot Control Panel Styles */
+
+:root {
+    --primary-color: #2196F3;
+    --secondary-color: #4CAF50;
+    --danger-color: #f44336;
+    --warning-color: #ff9800;
+    --dark-bg: #1a1a2e;
+    --panel-bg: #16213e;
+    --text-color: #eee;
+    --border-color: #0f3460;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--panel-bg);
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.connection-status {
+    display: flex;
+    gap: 15px;
+}
+
+.status-indicator {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+}
+
+.status-indicator.connected {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.status-indicator.disconnected {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+/* Main Layout */
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Panels */
+.panel {
+    background-color: var(--panel-bg);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+}
+
+.panel h2 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel h3 {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    margin: 10px 0;
+}
+
+/* Camera Panel */
+.camera-container {
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.camera-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Map Panel */
+.map-container {
+    position: relative;
+    background-color: #2a2a4a;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+#nav-map {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    cursor: crosshair;
+}
+
+.map-controls {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.map-hint {
+    font-size: 0.8rem;
+    color: #888;
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Mode Buttons */
+.mode-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-mode {
+    flex: 1;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.btn-mode.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Buttons */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    background-color: #3a3a5a;
+    color: var(--text-color);
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-warning {
+    background-color: var(--warning-color);
+    color: black;
+}
+
+.btn-large {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    margin-top: 15px;
+}
+
+/* D-Pad Controls */
+.joystick-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.d-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    gap: 5px;
+}
+
+.btn-direction {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3a3a5a;
+    border-radius: 10px;
+}
+
+.btn-direction:active {
+    background-color: var(--primary-color);
+}
+
+.btn-up { grid-column: 2; grid-row: 1; }
+.btn-left { grid-column: 1; grid-row: 2; }
+.btn-center {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 0.8rem;
+    background-color: var(--danger-color);
+}
+.btn-right { grid-column: 3; grid-row: 2; }
+.btn-down { grid-column: 2; grid-row: 3; }
+
+/* Speed Control */
+.speed-control {
+    margin: 15px 0;
+}
+
+.speed-control label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.speed-control input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #3a3a5a;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.speed-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+}
+
+/* Arm Controls */
+.arm-poses {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.btn-arm {
+    padding: 12px 8px;
+    font-size: 0.85rem;
+}
+
+.gripper-controls {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+
+.gripper-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.gripper-controls h3 {
+    width: 100%;
+}
+
+.btn-gripper {
+    flex: 1;
+    min-width: 100px;
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+/* Joint Sliders */
+.joint-sliders {
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+    margin-bottom: 15px;
+}
+
+.joint-slider-item {
+    margin-bottom: 12px;
+}
+
+.joint-slider-item label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    color: #ccc;
+}
+
+.joint-slider-item label span {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.joint-slider-item input[type="range"] {
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    background: #3a3a5a;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.joint-slider-item input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+}
+
+.joint-slider-item input[type="range"]::-webkit-slider-thumb:hover {
+    background: #64B5F6;
+}
+
+/* Status Panel */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: #2a2a4a;
+    border-radius: 5px;
+}
+
+.status-label {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.status-value {
+    font-weight: bold;
+    font-size: 0.85rem;
+}
+
+/* Cruise Control */
+.cruise-control {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
+.btn-cruise {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cruise:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.btn-cruise.cruise-active {
+    background-color: #ff9800;
+    animation: cruise-pulse 1s infinite;
+}
+
+.btn-cruise-stop {
+    background-color: #f44336;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cruise-stop:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+}
+
+@keyframes cruise-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+    50% { box-shadow: 0 0 15px 5px rgba(255, 152, 0, 0.5); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 15px;
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 15px;
+}
+
+/* E-Stop Button Animation */
+.btn-estop-active {
+    animation: pulse 0.5s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(244, 67, 54, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0); }
+}
+
+/* Touch-friendly adjustments for mobile */
+@media (max-width: 600px) {
+    .d-pad {
+        grid-template-columns: repeat(3, 70px);
+        grid-template-rows: repeat(3, 70px);
+    }
+
+    .btn-direction {
+        width: 70px;
+        height: 70px;
+    }
+
+    .arm-poses {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,69 @@
+# Mobile Manipulator Hardware Parameters
+hardware_node:
+  ros__parameters:
+    # Serial connection
+    serial_port: "/dev/ttyACM0"
+    baud_rate: 115200
+
+    # Arm joints
+    arm_joints:
+      - joint_1
+      - joint_2
+      - joint_3
+      - joint_4
+      - gripper_base_joint
+      - left_gear_joint
+
+    # Arm joint limits (radians)
+    arm_joint_limits:
+      joint_1: [-3.1416, 3.1416]
+      joint_2: [-1.5708, 1.5708]
+      joint_3: [-1.5708, 1.5708]
+      joint_4: [-1.5708, 1.5708]
+      gripper_base_joint: [-3.1416, 3.1416]
+      left_gear_joint: [0.0, 1.0]
+
+    # Wheel joints
+    wheel_joints:
+      - front_left_joint
+      - front_right_joint
+      - back_left_joint
+      - back_right_joint
+
+    # Base parameters
+    wheel_radius: 0.075  # meters
+    wheel_base: 0.35     # meters
+    encoder_cpr: 360     # counts per revolution
+
+    # Mimic joints (for gripper mechanism)
+    mimic_joints:
+      right_gear_joint:
+        parent: left_gear_joint
+        multiplier: -1.0
+      left_finger_joint:
+        parent: left_gear_joint
+        multiplier: 1.0
+      right_finger_joint:
+        parent: left_gear_joint
+        multiplier: 1.0
+      left_joint:
+        parent: left_gear_joint
+        multiplier: -1.0
+      right_joint:
+        parent: left_gear_joint
+        multiplier: 1.0
+
+    # Publishing rates
+    joint_state_rate: 50.0  # Hz
+    odom_rate: 50.0         # Hz
+
+    # Frames
+    base_frame: "body_link"
+    odom_frame: "odom"
+
+    # TF publishing
+    publish_odom_tf: true
+
+    # Covariance (for odometry)
+    pose_covariance_diagonal: [0.01, 0.01, 0.01, 0.01, 0.01, 0.03]
+    twist_covariance_diagonal: [0.01, 0.01, 0.01, 0.01, 0.01, 0.03]

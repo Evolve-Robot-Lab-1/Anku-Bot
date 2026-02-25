@@ -1,0 +1,52 @@
+# =============================================================================
+# Named Locations Configuration for QR Test Arena
+# =============================================================================
+# Maps QR code content (location names) to navigation coordinates.
+#
+# Each location has:
+#   - x, y: Position in map frame (meters)
+#   - theta: Orientation (radians, 0 = facing +X, pi/2 = facing +Y)
+#
+# The QR code on objects should contain the location name (e.g., "station_A")
+# which is then looked up in this file to get navigation coordinates.
+#
+# Layout for qr_test_arena.world:
+#   - Pickup table at (1.0, 0) - robot approaches from origin
+#   - Station A at (3, 3) - red marker (NE corner)
+#   - Station B at (3, -3) - green marker (SE corner)
+#   - Station C at (-3, 3) - blue marker (NW corner)
+# =============================================================================
+
+locations:
+  # Pickup station - where objects with QR codes are placed for pickup
+  # Robot approaches from the front (facing +X toward the table)
+  pickup:
+    x: 0.5
+    y: 0.0
+    theta: 0.0  # Facing +X (toward pickup table at x=1.0)
+
+  # Delivery stations - destinations encoded in QR codes
+
+  # Station A - Northeast corner (3, 3) - Red
+  station_A:
+    x: 2.5
+    y: 2.5
+    theta: 0.785  # Facing toward station marker (~45 degrees)
+
+  # Station B - Southeast corner (3, -3) - Green
+  station_B:
+    x: 2.5
+    y: -2.5
+    theta: -0.785  # Facing toward station marker (~-45 degrees)
+
+  # Station C - Northwest corner (-3, 3) - Blue
+  station_C:
+    x: -2.5
+    y: 2.5
+    theta: 2.356  # Facing toward station marker (~135 degrees)
+
+  # Default fallback location if QR code content is unknown
+  default:
+    x: 1.5
+    y: 1.5
+    theta: 0.0

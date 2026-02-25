@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: mobile_manipulator_bringup
+    relative_path: src/urdf/manipulator_mobile_with_arm.urdf
+  srdf:
+    relative_path: config/manipulator_mobile_bringup.srdf
+  package_settings:
+    author_name: vikneswaran
+    author_email: vikneswaranm1@gmail.com
+    generated_timestamp: 1762323576
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity

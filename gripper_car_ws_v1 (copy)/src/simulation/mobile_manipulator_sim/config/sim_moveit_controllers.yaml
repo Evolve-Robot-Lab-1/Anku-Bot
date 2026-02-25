@@ -1,0 +1,27 @@
+# MoveIt controller configuration for Gazebo simulation
+# Uses static_ prefixed joint names
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - arm_controller
+    - gripper_controller
+
+  arm_controller:
+    type: FollowJointTrajectory
+    joints:
+      - static_joint_1
+      - static_joint_2
+      - static_joint_3
+      - static_joint_4
+      - static_gripper_base_joint
+    action_ns: follow_joint_trajectory
+    default: true
+
+  gripper_controller:
+    type: GripperCommand
+    joints:
+      - static_left_gear_joint
+    action_ns: gripper_cmd
+    default: true

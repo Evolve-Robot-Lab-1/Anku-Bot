@@ -1,0 +1,62 @@
+# OBSBOT Meet SE - Camera Configuration
+# Status: WORKING (2 cameras tested)
+
+## Device Info
+- Device: OBSBOT Meet SE (Remo Tech Co., Ltd.)
+- Vendor/Product ID: 3564:fefe
+- Quantity: 2 cameras
+
+## PC Setup (Laptop - ash)
+- Camera 1: /dev/video4, /dev/video5 (usb-0000:00:14.0-9)
+- Best viewer: GStreamer (ffplay freezes, Cheese low quality)
+- Launch: gst-launch-1.0 v4l2src device=/dev/video4 ! image/jpeg,width=1920,height=1080,framerate=30/1 ! jpegdec ! videoconvert ! autovideosink sync=false
+
+## RPi Setup (pi@192.168.1.10, Ubuntu 22.04, RPI 4B 4GB)
+- Camera 1 (Left):  /dev/video0 (usb-0000:01:00.0-1.2)
+- Camera 2 (Right): /dev/video2 (usb-0000:01:00.0-1.1)
+- SSH: pi@192.168.1.10 (password: 123)
+- Web Stream: http://192.168.1.10:8090/
+- Stream Script: ~/cam_stream.py (also saved as cam_stream.py in this folder)
+
+## Camera Settings
+- Resolution: 1920x1080
+- Format: MJPEG
+- Framerate: 30fps
+
+## Supported Resolutions
+- 1920x1080 (MJPEG): up to 100fps
+- 1280x720 (MJPEG): up to 150fps
+- 640x480 (YUYV): up to 30fps
+- 640x360 (YUYV): up to 30fps
+
+## Camera Controls (v4l2)
+- Zoom: 0-12 (zoom_absolute)
+- Pan: -648000 to 648000 (pan_absolute)
+- Tilt: -648000 to 648000 (tilt_absolute)
+- Brightness: 0-100 (default 50)
+- Contrast: 0-100 (default 50)
+- Saturation: 0-100 (default 50)
+- Sharpness: 0-100 (default 50)
+- Auto Exposure: enabled
+- Auto Focus: enabled
+- Auto White Balance: enabled
+
+## Set Zoom/Pan/Tilt (example)
+v4l2-ctl -d /dev/video0 --set-ctrl=zoom_absolute=6
+v4l2-ctl -d /dev/video0 --set-ctrl=pan_absolute=-108000
+v4l2-ctl -d /dev/video0 --set-ctrl=tilt_absolute=0
+
+## Web Stream (Dual Camera)
+- Flask + OpenCV threaded capture
+- Dual side-by-side view with FPS counter
+- Start: python3 ~/cam_stream.py
+- URL: http://192.168.1.10:8090/
+- Endpoints: /frame/left, /frame/right
+
+## Notes
+- 2 cameras work simultaneously on RPi
+- Cheese app works but low quality
+- ffplay shows frozen image on PC, not suitable
+- GStreamer pipeline gives best live feed on PC
+- Flask JS-based frame fetching works best for web streaming
+- MJPEG multipart streaming does NOT work (shows single frame)

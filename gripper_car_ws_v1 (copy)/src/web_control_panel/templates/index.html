@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Control Panel</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Mobile Manipulator Control Panel</h1>
+            <div class="connection-status">
+                <span id="ros-status" class="status-indicator disconnected">ROS: Disconnected</span>
+            </div>
+        </header>
+
+        <main>
+            <!-- Left Column: Camera and Map -->
+            <div class="left-panel">
+                <!-- Camera Feed -->
+                <div class="panel camera-panel">
+                    <h2>Camera Feed</h2>
+                    <div class="camera-container">
+                        <img id="camera-feed" src="" alt="Camera Feed" onerror="this.src='/static/css/no-signal.svg'">
+                    </div>
+                </div>
+
+                <!-- Navigation Map -->
+                <div class="panel map-panel">
+                    <h2>Navigation Map</h2>
+                    <div class="map-container">
+                        <canvas id="nav-map" width="300" height="300"></canvas>
+                        <div class="map-controls">
+                            <button id="btn-cancel-nav" class="btn btn-warning" disabled>Cancel Nav</button>
+                        </div>
+                    </div>
+                    <p class="map-hint">Click on map to send navigation goal</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Controls -->
+            <div class="right-panel">
+                <!-- Mode Selection -->
+                <div class="panel mode-panel">
+                    <h2>Control Mode</h2>
+                    <div class="mode-buttons">
+                        <button id="btn-manual" class="btn btn-mode active">Manual</button>
+                        <button id="btn-auto" class="btn btn-mode">Auto</button>
+                        <button id="btn-nav" class="btn btn-mode">Nav2</button>
+                    </div>
+                </div>
+
+                <!-- Movement Controls -->
+                <div class="panel movement-panel">
+                    <h2>Movement</h2>
+                    <div class="joystick-container">
+                        <div class="d-pad">
+                            <button id="btn-forward" class="btn btn-direction btn-up">&#9650;</button>
+                            <button id="btn-left" class="btn btn-direction btn-left">&#9664;</button>
+                            <button id="btn-stop" class="btn btn-direction btn-center">STOP</button>
+                            <button id="btn-right" class="btn btn-direction btn-right">&#9654;</button>
+                            <button id="btn-backward" class="btn btn-direction btn-down">&#9660;</button>
+                        </div>
+                    </div>
+                    <div class="speed-control">
+                        <label for="speed-slider">Speed: <span id="speed-value">0.3</span> m/s</label>
+                        <input type="range" id="speed-slider" min="0.1" max="1.0" step="0.1" value="0.3">
+                    </div>
+                    <button id="btn-estop" class="btn btn-danger btn-large">E-STOP</button>
+                </div>
+
+                <!-- Arm Controls -->
+                <div class="panel arm-panel">
+                    <h2>Arm Control</h2>
+                    <div class="arm-poses">
+                        <button id="btn-home" class="btn btn-arm">Home</button>
+                        <button id="btn-search" class="btn btn-arm">Search</button>
+                        <button id="btn-pick" class="btn btn-arm">Pick</button>
+                        <button id="btn-place" class="btn btn-arm">Place</button>
+                        <button id="btn-carry" class="btn btn-arm">Carry</button>
+                    </div>
+                    <div class="gripper-controls">
+                        <h3>Gripper</h3>
+                        <button id="btn-gripper-open" class="btn btn-gripper">Open</button>
+                        <button id="btn-gripper-close" class="btn btn-gripper">Close</button>
+                    </div>
+                </div>
+
+                <!-- Status Display -->
+                <div class="panel status-panel">
+                    <h2>Status</h2>
+                    <div class="status-grid">
+                        <div class="status-item">
+                            <span class="status-label">Mode:</span>
+                            <span id="status-mode" class="status-value">Manual</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Arm:</span>
+                            <span id="status-arm" class="status-value">Ready</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Obstacle:</span>
+                            <span id="status-obstacle" class="status-value">Clear</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Nav:</span>
+                            <span id="status-nav" class="status-value">Idle</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Linear Vel:</span>
+                            <span id="status-linear-vel" class="status-value">0.00</span>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-label">Angular Vel:</span>
+                            <span id="status-angular-vel" class="status-value">0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Mobile Manipulator Web Control Panel | ROS2 Humble</p>
+        </footer>
+    </div>
+
+    <!-- ROS Bridge Configuration -->
+    <script>
+        window.ROSBRIDGE_PORT = {{ rosbridge_port }};
+        window.VIDEO_SERVER_PORT = {{ video_server_port }};
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/roslib@1/build/roslib.min.js"></script>
+    <script src="/static/js/control.js"></script>
+</body>
+</html>

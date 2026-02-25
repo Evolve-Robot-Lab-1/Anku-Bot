@@ -1,0 +1,18 @@
+[Unit]
+Description=Mobile Manipulator Robot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+Environment="HOME=/home/pi"
+Environment="ROS_DOMAIN_ID=0"
+Environment="RMW_IMPLEMENTATION=rmw_fastrtps_cpp"
+ExecStartPre=/bin/sleep 10
+ExecStart=/home/pi/start_robot_full.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

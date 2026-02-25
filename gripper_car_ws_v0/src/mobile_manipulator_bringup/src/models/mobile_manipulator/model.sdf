@@ -1,0 +1,952 @@
+<sdf version='1.7'>
+  <model name='manipulator_mobile_bringup'>
+    <link name='base_link'>
+      <inertial>
+        <pose>0.010755 0.086616 -0.036111 0 -0 0</pose>
+        <mass>1.0822</mass>
+        <inertia>
+          <ixx>0.00761176</ixx>
+          <ixy>9.11162e-06</ixy>
+          <ixz>3.71855e-05</ixz>
+          <iyy>0.00909151</iyy>
+          <iyz>-0.000896901</iyz>
+          <izz>0.00230246</izz>
+        </inertia>
+      </inertial>
+      <collision name='base_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/base_link.STL</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <collision name='base_link_fixed_joint_lump__arm_base_link_collision_1'>
+        <pose>0.008722 0.132635 0.127669 -3.14159 -0 -1.5708</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/arm_base_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='base_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/base_link.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Red</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+      <visual name='base_link_fixed_joint_lump__arm_base_link_visual_1'>
+        <pose>0.008722 0.132635 0.127669 -3.14159 -0 -1.5708</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/arm_base_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='joint_1' type='revolute'>
+      <pose relative_to='base_link'>0.008722 0.133402 0.183106 -0 0 1.62453</pose>
+      <parent>base_link</parent>
+      <child>link_1</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <effort>5</effort>
+          <velocity>0</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link_1'>
+      <pose relative_to='joint_1'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.002243 0.007576 0.018765 0 -0 0</pose>
+        <mass>0.072312</mass>
+        <inertia>
+          <ixx>4.9568e-05</ixx>
+          <ixy>-1.5508e-06</ixy>
+          <ixz>-6.3994e-06</ixz>
+          <iyy>6.2445e-05</iyy>
+          <iyz>-6.7489e-06</iyz>
+          <izz>5.6938e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name='link_1_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_1.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='link_1_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_1.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='joint_2' type='revolute'>
+      <pose relative_to='link_1'>0.013919 0 0.040276 0 0.138937 0</pose>
+      <parent>link_1</parent>
+      <child>link_2</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <effort>5</effort>
+          <velocity>0</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link_2'>
+      <pose relative_to='joint_2'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>-0.000129 -0.004333 0.059293 0 -0 0</pose>
+        <mass>0.056531</mass>
+        <inertia>
+          <ixx>9.4195e-05</ixx>
+          <ixy>-2.9887e-10</ixy>
+          <ixz>-1.4758e-09</ixz>
+          <iyy>9.7021e-05</iyy>
+          <iyz>-2.8902e-10</iyz>
+          <izz>7.2804e-06</izz>
+        </inertia>
+      </inertial>
+      <collision name='link_2_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_2.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='link_2_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_2.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='joint_3' type='revolute'>
+      <pose relative_to='link_2'>0 0 0.12 -0.008385 -0.188217 -0.001313</pose>
+      <parent>link_2</parent>
+      <child>link_3</child>
+      <axis>
+        <xyz>0.00129 -0.999962 -0.008631</xyz>
+        <limit>
+          <effort>5</effort>
+          <velocity>0</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link_3'>
+      <pose relative_to='joint_3'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.03808 0.013781 -0.00092 0 -0 0</pose>
+        <mass>0.05696</mass>
+        <inertia>
+          <ixx>1.1086e-05</ixx>
+          <ixy>-9.9973e-07</ixy>
+          <ixz>1.4846e-06</ixz>
+          <iyy>6.7149e-05</iyy>
+          <iyz>5.5765e-08</iyz>
+          <izz>6.3613e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name='link_3_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_3.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='link_3_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_3.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='joint_4' type='revolute'>
+      <pose relative_to='link_3'>0.087611 0.013627 -0.00748 -0.093143 0.017083 0.002123</pose>
+      <parent>link_3</parent>
+      <child>link_4</child>
+      <axis>
+        <xyz>0.999958 0.000241 -0.009107</xyz>
+        <limit>
+          <effort>5</effort>
+          <velocity>0</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link_4'>
+      <pose relative_to='joint_4'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.020256 -0.005744 0.004904 0 -0 0</pose>
+        <mass>0.018176</mass>
+        <inertia>
+          <ixx>2.8956e-06</ixx>
+          <ixy>6.016e-07</ixy>
+          <ixz>1.9471e-08</ixz>
+          <iyy>5.3577e-06</iyy>
+          <iyz>-1.8766e-08</iyz>
+          <izz>4.262e-06</izz>
+        </inertia>
+      </inertial>
+      <collision name='link_4_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_4.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='link_4_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/link_4.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='gripper_base_joint' type='revolute'>
+      <pose relative_to='link_4'>0.029997 4.8e-05 0.004727 -0.016991 0.18173 -0.001179</pose>
+      <parent>link_4</parent>
+      <child>gripper_base_link</child>
+      <axis>
+        <xyz>0 0.99996 0.008727</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='gripper_base_link'>
+      <pose relative_to='gripper_base_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.023551 -0.014074 0.005694 0 -0 0</pose>
+        <mass>0.015721</mass>
+        <inertia>
+          <ixx>2.5605e-06</ixx>
+          <ixy>-1.4166e-06</ixy>
+          <ixz>-1.3765e-06</ixz>
+          <iyy>7.2536e-06</iyy>
+          <iyz>-3.5787e-07</iyz>
+          <izz>8.1096e-06</izz>
+        </inertia>
+      </inertial>
+      <collision name='gripper_base_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/gripper_base_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='gripper_base_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/gripper_base_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_gear_joint' type='revolute'>
+      <pose relative_to='gripper_base_link'>0.038 0.001762 0.015875 0.007963 -0.00357 0.42139</pose>
+      <parent>gripper_base_link</parent>
+      <child>left_gear_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_gear_link'>
+      <pose relative_to='left_gear_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.005683 -0.000407 0.000141 0 -0 0</pose>
+        <mass>0.0025659</mass>
+        <inertia>
+          <ixx>9.0729e-08</ixx>
+          <ixy>-1.9117e-08</ixy>
+          <ixz>2.1842e-19</ixz>
+          <iyy>3.6228e-07</iyy>
+          <iyz>-4.5692e-20</iyz>
+          <izz>4.4616e-07</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_gear_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/left_gear_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='left_gear_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/left_gear_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_finger_joint' type='revolute'>
+      <pose relative_to='left_gear_link'>0.030729 0.001075 -0.001862 0 0 -0.82939</pose>
+      <parent>left_gear_link</parent>
+      <child>left_finger_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_finger_link'>
+      <pose relative_to='left_finger_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.026893 0.004513 -0.004247 0 -0 0</pose>
+        <mass>0.0053975</mass>
+        <inertia>
+          <ixx>1.8308e-07</ixx>
+          <ixy>-3.7341e-07</ixy>
+          <ixz>-6.2879e-12</ixz>
+          <iyy>1.5958e-06</iyy>
+          <iyz>1.1822e-11</iyz>
+          <izz>1.7139e-06</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_finger_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/left_finger_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='left_finger_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/left_finger_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_joint' type='revolute'>
+      <pose relative_to='gripper_base_link'>0.058 -0.007128 0.014627 0.007825 -0.003863 0.4585</pose>
+      <parent>gripper_base_link</parent>
+      <child>left_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_link'>
+      <pose relative_to='left_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.0155 -0 0.001311 0 -0 0</pose>
+        <mass>0.00079876</mass>
+        <inertia>
+          <ixx>3.6325e-09</ixx>
+          <ixy>-8.3545e-23</ixy>
+          <ixz>1.1071e-22</ixz>
+          <iyy>1.0292e-07</iyy>
+          <iyz>-6.3197e-22</iyz>
+          <izz>1.0442e-07</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/left_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='left_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/left_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_gear_joint' type='revolute'>
+      <pose relative_to='gripper_base_link'>0.038 -0.025124 0.014043 0.006547 0.00577 -0.72232</pose>
+      <parent>gripper_base_link</parent>
+      <child>right_gear_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_gear_link'>
+      <pose relative_to='right_gear_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.005579 0.000602 0.001738 0 -0 0</pose>
+        <mass>0.0026416</mass>
+        <inertia>
+          <ixx>9.0046e-08</ixx>
+          <ixy>9.2574e-09</ixy>
+          <ixz>4.7431e-21</ixz>
+          <iyy>3.6424e-07</iyy>
+          <iyz>-3.7485e-20</iyz>
+          <izz>4.4724e-07</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_gear_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/right_gear_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='right_gear_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/right_gear_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_finger_joint' type='revolute'>
+      <pose relative_to='right_gear_link'>0.030749 0 -0.008759 3.14159 0 1.1008</pose>
+      <parent>right_gear_link</parent>
+      <child>right_finger_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_finger_link'>
+      <pose relative_to='right_finger_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.026893 0.004513 -0.004247 0 -0 0</pose>
+        <mass>0.0053975</mass>
+        <inertia>
+          <ixx>1.8308e-07</ixx>
+          <ixy>-3.7341e-07</ixy>
+          <ixz>-6.2523e-12</ixz>
+          <iyy>1.5958e-06</iyy>
+          <iyz>1.1723e-11</iyz>
+          <izz>1.7139e-06</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_finger_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/right_finger_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='right_finger_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/right_finger_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_joint' type='revolute'>
+      <pose relative_to='gripper_base_link'>0.058 -0.017131 0.014908 0.006619 0.005687 -0.70976</pose>
+      <parent>gripper_base_link</parent>
+      <child>right_link</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>2</upper>
+          <effort>5</effort>
+          <velocity>0</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_link'>
+      <pose relative_to='right_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.0155 -0 0.000943 0 -0 0</pose>
+        <mass>0.00079876</mass>
+        <inertia>
+          <ixx>3.6325e-09</ixx>
+          <ixy>1.6885e-22</ixy>
+          <ixz>1.2558e-22</ixz>
+          <iyy>1.0292e-07</iyy>
+          <iyz>-6.27e-22</iyz>
+          <izz>1.0442e-07</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/right_link.STL</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='right_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/right_link.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='back_left_joint' type='revolute'>
+      <pose relative_to='base_link'>-0.117093 -0.035697 0.016106 -1.58825 -0 -1.5708</pose>
+      <parent>base_link</parent>
+      <child>back_left_link</child>
+      <axis>
+        <xyz>0 0.017452 -0.999848</xyz>
+        <limit>
+          <effort>10</effort>
+          <velocity>10</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='back_left_link'>
+      <pose relative_to='back_left_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>1.6e-05 0.000309 -0.016089 0 -0 0</pose>
+        <mass>0.10753</mass>
+        <inertia>
+          <ixx>6.0298e-05</ixx>
+          <ixy>-2.15e-10</ixy>
+          <ixz>6.5444e-11</ixz>
+          <iyy>6.0303e-05</iyy>
+          <iyz>-8.3565e-07</iyz>
+          <izz>0.00010816</izz>
+        </inertia>
+      </inertial>
+      <collision name='back_left_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/back_left_link.STL</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='back_left_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/back_left_link.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Yellow</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint name='back_right_joint' type='revolute'>
+      <pose relative_to='base_link'>0.139571 -0.035697 0.016106 1.58825 0 1.5708</pose>
+      <parent>base_link</parent>
+      <child>back_right_link</child>
+      <axis>
+        <xyz>0 0.017452 0.999848</xyz>
+        <limit>
+          <effort>10</effort>
+          <velocity>10</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='back_right_link'>
+      <pose relative_to='back_right_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>1.6e-05 0.000252 0.01609 0 -0 0</pose>
+        <mass>0.10753</mass>
+        <inertia>
+          <ixx>6.0298e-05</ixx>
+          <ixy>2.1258e-10</ixy>
+          <ixz>-7.2908e-11</ixz>
+          <iyy>6.0303e-05</iyy>
+          <iyz>8.3565e-07</iyz>
+          <izz>0.00010816</izz>
+        </inertia>
+      </inertial>
+      <collision name='back_right_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/back_right_link.STL</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='back_right_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/back_right_link.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Yellow</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint name='front_left_joint' type='revolute'>
+      <pose relative_to='base_link'>-0.117093 0.149303 0.016106 -1.58825 -0 -1.5708</pose>
+      <parent>base_link</parent>
+      <child>front_left_link</child>
+      <axis>
+        <xyz>0 0.017452 -0.999848</xyz>
+        <limit>
+          <effort>10</effort>
+          <velocity>10</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='front_left_link'>
+      <pose relative_to='front_left_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>1.6e-05 0.000309 -0.016089 0 -0 0</pose>
+        <mass>0.10753</mass>
+        <inertia>
+          <ixx>6.0298e-05</ixx>
+          <ixy>-2.15e-10</ixy>
+          <ixz>6.5444e-11</ixz>
+          <iyy>6.0303e-05</iyy>
+          <iyz>-8.3565e-07</iyz>
+          <izz>0.00010816</izz>
+        </inertia>
+      </inertial>
+      <collision name='front_left_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/front_left_link.STL</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='front_left_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/front_left_link.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Yellow</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint name='front_right_joint' type='revolute'>
+      <pose relative_to='base_link'>0.139571 0.149303 0.016106 1.58825 0 1.5708</pose>
+      <parent>base_link</parent>
+      <child>front_right_link</child>
+      <axis>
+        <xyz>0 0.017452 0.999848</xyz>
+        <limit>
+          <effort>10</effort>
+          <velocity>10</velocity>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.1</damping>
+          <friction>0.1</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='front_right_link'>
+      <pose relative_to='front_right_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>1.6e-05 0.000252 0.01609 0 -0 0</pose>
+        <mass>0.10753</mass>
+        <inertia>
+          <ixx>6.0298e-05</ixx>
+          <ixy>2.1258e-10</ixy>
+          <ixz>-7.2908e-11</ixz>
+          <iyy>6.0303e-05</iyy>
+          <iyz>8.3565e-07</iyz>
+          <izz>0.00010816</izz>
+        </inertia>
+      </inertial>
+      <collision name='front_right_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/front_right_link.STL</uri>
+          </mesh>
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode>
+              <mu>0.2</mu>
+              <mu2>0.2</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='front_right_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/varun/xprj/mobile_manipulator_ws/install/mobile_manipulator_bringup/share/mobile_manipulator_bringup/meshes/front_right_link.STL</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Yellow</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <static>0</static>
+    <plugin name='differential_drive_controller' filename='libgazebo_ros_diff_drive.so'>
+      <num_wheel_pairs>2</num_wheel_pairs>
+      <left_joint>front_left_joint</left_joint>
+      <right_joint>front_right_joint</right_joint>
+      <left_joint>back_left_joint</left_joint>
+      <right_joint>back_right_joint</right_joint>
+      <wheel_separation>0.35</wheel_separation>
+      <wheel_diameter>0.15</wheel_diameter>
+      <max_wheel_torque>1000</max_wheel_torque>
+      <max_wheel_acceleration>5.0</max_wheel_acceleration>
+      <publish_odom>1</publish_odom>
+      <publish_odom_tf>1</publish_odom_tf>
+      <publish_wheel_tf>1</publish_wheel_tf>
+      <covariance_x>0.0001</covariance_x>
+      <covariance_y>0.0001</covariance_y>
+      <covariance_yaw>0.01</covariance_yaw>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+    </plugin>
+    <plugin name='gazebo_ros_joint_state_publisher' filename='libgazebo_ros_joint_state_publisher.so'>
+      <update_rate>50</update_rate>
+      <joint_name>front_left_joint</joint_name>
+      <joint_name>front_right_joint</joint_name>
+      <joint_name>back_left_joint</joint_name>
+      <joint_name>back_right_joint</joint_name>
+      <joint_name>joint_1</joint_name>
+      <joint_name>joint_2</joint_name>
+      <joint_name>joint_3</joint_name>
+      <joint_name>joint_4</joint_name>
+      <joint_name>gripper_base_joint</joint_name>
+      <joint_name>left_gear_joint</joint_name>
+      <joint_name>right_gear_joint</joint_name>
+      <joint_name>left_finger_joint</joint_name>
+      <joint_name>right_finger_joint</joint_name>
+      <joint_name>left_joint</joint_name>
+      <joint_name>right_joint</joint_name>
+    </plugin>
+  </model>
+</sdf>
