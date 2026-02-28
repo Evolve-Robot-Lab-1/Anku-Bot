@@ -15,7 +15,7 @@ Endpoints:
 Port: 8090
 """
 
-from flask import Flask, Response, request, jsonify
+from flask import Flask, Response, request, jsonify, render_template_string
 import cv2
 import threading
 import subprocess
@@ -219,6 +219,171 @@ def frame_right():
         return '', 204
     return Response(f, mimetype='image/jpeg',
                     headers={'Cache-Control': 'no-store'})
+
+
+@app.route('/tv')
+def tv_dual_view():
+    return render_template_string("""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Naval HDMI Dual Camera</title>
+  <style>
+    :root {
+      --bg: #0a0b0d;
+      --panel: #12151a;
+      --text: #e7edf7;
+      --muted: #aab7cc;
+      --line: #243145;
+      --ok: #36d399;
+      --warn: #f59e0b;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "DejaVu Sans", Arial, sans-serif;
+      overflow: hidden;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .cam {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .hdr {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--line);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .st {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .frame-wrap {
+      min-height: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .ftr {
+      border-top: 1px solid var(--line);
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .ok { color: var(--ok); }
+    .warn { color: var(--warn); }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <section class="cam">
+      <div class="hdr">
+        <span>LEFT CAMERA</span>
+        <span id="left-status" class="st">CONNECTING</span>
+      </div>
+      <div class="frame-wrap"><img id="left-img" alt="Left camera"></div>
+      <div class="ftr"><span id="left-fps">-- FPS</span><span>/frame/left</span></div>
+    </section>
+    <section class="cam">
+      <div class="hdr">
+        <span>RIGHT CAMERA</span>
+        <span id="right-status" class="st">CONNECTING</span>
+      </div>
+      <div class="frame-wrap"><img id="right-img" alt="Right camera"></div>
+      <div class="ftr"><span id="right-fps">-- FPS</span><span>/frame/right</span></div>
+    </section>
+  </div>
+  <script>
+    const left = { img: document.getElementById('left-img'), st: document.getElementById('left-status'), fps: document.getElementById('left-fps') };
+    const right = { img: document.getElementById('right-img'), st: document.getElementById('right-status'), fps: document.getElementById('right-fps') };
+
+    function updateStatus(el, ok) {
+      el.textContent = ok ? 'LIVE' : 'NO SIGNAL';
+      el.className = 'st ' + (ok ? 'ok' : 'warn');
+    }
+
+    function startFeed(side, target) {
+      let frames = 0;
+      let lastFpsTs = performance.now();
+      let active = true;
+
+      async function tick() {
+        if (!active) return;
+        try {
+          const resp = await fetch(`/frame/${side}?t=${Date.now()}`, { cache: 'no-store' });
+          if (resp.ok) {
+            const blob = await resp.blob();
+            if (blob.size > 0) {
+              const url = URL.createObjectURL(blob);
+              target.img.onload = () => URL.revokeObjectURL(url);
+              target.img.src = url;
+              frames += 1;
+              updateStatus(target.st, true);
+            } else {
+              updateStatus(target.st, false);
+            }
+          } else {
+            updateStatus(target.st, false);
+          }
+        } catch (_) {
+          updateStatus(target.st, false);
+        }
+
+        const now = performance.now();
+        if (now - lastFpsTs >= 1000) {
+          target.fps.textContent = `${frames} FPS`;
+          frames = 0;
+          lastFpsTs = now;
+        }
+        setTimeout(tick, 33);
+      }
+
+      tick();
+      return () => { active = false; };
+    }
+
+    const stopLeft = startFeed('left', left);
+    const stopRight = startFeed('right', right);
+    window.addEventListener('beforeunload', () => { stopLeft(); stopRight(); });
+  </script>
+</body>
+</html>
+""")
 
 
 @app.route('/zoom/left', methods=['POST', 'OPTIONS'])

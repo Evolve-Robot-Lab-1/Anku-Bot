@@ -1,0 +1,15 @@
+[Unit]
+Description=Naval HDMI dual-camera kiosk
+After=graphical-session.target network-online.target
+Wants=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=%h/naval_ws/src/naval_web_control/scripts/naval_hdmi_kiosk.sh
+Restart=always
+RestartSec=3
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=%h/.Xauthority
+
+[Install]
+WantedBy=default.target
