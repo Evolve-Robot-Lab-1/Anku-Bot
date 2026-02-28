@@ -67,3 +67,59 @@
 - cam_stream.py        : Dual camera web streaming script
 - obsbot_rpi_test.jpg  : Test capture from RPi
 - session_log.txt      : This file
+
+---
+
+# Session Log - Feb 28, 2026
+# HDMI Dual-Camera TV Output (Headless Pi) + Git Push
+
+## Goal
+- Keep existing Ethernet control + joystick workflow unchanged.
+- Add HDMI TV output that shows Left + Right camera feeds when robot is launched.
+
+## Implemented
+
+### 1) Dual-cam TV page on camera server
+- Added endpoint: `/tv`
+- File: `naval_web_control/scripts/naval_cam_server.py`
+- Purpose: full-screen friendly page with LEFT and RIGHT camera feeds and FPS/status.
+
+### 2) HDMI kiosk launcher script
+- Added file: `naval_web_control/scripts/naval_hdmi_kiosk.sh`
+- Behavior:
+  - waits for camera server health (`/health`)
+  - detects Chromium
+  - checks display session availability (`DISPLAY` / `WAYLAND_DISPLAY`)
+  - launches fullscreen kiosk to `http://127.0.0.1:8090/tv?kiosk=1`
+  - safely exits without error if no GUI/display session is available
+
+### 3) Non-breaking start script integration
+- Updated file: `naval_web_control/start_naval.sh`
+- Added optional HDMI attempt after camera server starts.
+- Added flag: `--no-hdmi` (disable HDMI kiosk per run).
+- Existing ROS2 launch flow unchanged.
+
+### 4) User systemd service template
+- Added file: `naval_web_control/systemd/naval-hdmi-kiosk.service`
+- Purpose: optional autostart of HDMI kiosk in user session.
+
+### 5) Deployment documentation
+- Added file: `naval_web_control/HDMI_KIOSK_SETUP.md`
+- Includes remote headless rollout steps via SSH/Tailscale:
+  - install `xorg openbox lightdm chromium-browser curl`
+  - force HDMI in `/boot/firmware/config.txt`
+  - configure LightDM autologin
+  - set Openbox autostart for kiosk script
+  - reboot and verify
+
+## Validation
+- `bash -n` passed for modified shell scripts.
+- `python3 -m py_compile` passed for `naval_cam_server.py`.
+
+## Git
+- Commit: `2da47c3`
+- Message: `Add HDMI dual-camera TV kiosk flow for headless Pi`
+- Branch: `main`
+- Remote: `origin`
+- Pushed successfully to:
+  `https://github.com/Evolve-Robot-Lab-1/Anku-Bot.git`
