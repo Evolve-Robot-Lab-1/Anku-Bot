@@ -1,0 +1,19 @@
+{
+  "name": "naval_web_control",
+  "version": "1.0.0",
+  "description": "Tailwind toolchain for Naval web UI",
+  "scripts": {
+    "build:css": "npx @tailwindcss/cli -i ./static/css/tailwind.input.css -o ./static/css/tailwind.css --minify",
+    "watch:css": "npx @tailwindcss/cli -i ./static/css/tailwind.input.css -o ./static/css/tailwind.css --watch"
+  },
+  "keywords": [
+    "tailwindcss",
+    "robot-ui"
+  ],
+  "author": "Evolve Robot Lab",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.2.1",
+    "tailwindcss": "^4.2.1"
+  }
+}
