@@ -123,3 +123,47 @@
 - Remote: `origin`
 - Pushed successfully to:
   `https://github.com/Evolve-Robot-Lab-1/Anku-Bot.git`
+
+---
+
+# Session Log - Mar 2, 2026
+# Tailwind Setup + HDMI Rollout Verification
+
+## Goal
+- Prepare Tailwind setup for this PC and client laptop.
+- Verify latest HDMI work from recent commits.
+- Keep robot rollout commands ready from updated `main`.
+
+## Implemented
+
+### 1) Verified latest HDMI commits
+- Confirmed on `main`:
+  - `2da47c3` Add HDMI dual-camera TV kiosk flow for headless Pi
+  - `457e529` Add session log entry for Feb 28 2026 HDMI rollout
+- `git pull --ff-only origin main` returned: Already up to date.
+
+### 2) Added Tailwind toolchain in `naval_web_control`
+- Added `package.json` with scripts:
+  - `npm run build:css`
+  - `npm run watch:css`
+- Added `package-lock.json`
+- Added `.gitignore` for `node_modules/`
+- Added Tailwind input file:
+  - `naval_web_control/static/css/tailwind.input.css`
+- Built output CSS:
+  - `naval_web_control/static/css/tailwind.css`
+- Linked generated stylesheet in:
+  - `naval_web_control/templates/index.html`
+
+### 3) Added deployment instructions
+- Added:
+  - `naval_web_control/TAILWIND_SETUP.md`
+- Includes same steps for local PC and client laptop plus robot pull/start commands.
+
+## Validation
+- `npm run build:css` passed (Tailwind v4.2.1).
+
+## Git
+- Commit: `c747bcc`
+- Message: `Add Tailwind toolchain and rollout docs for HDMI workflow`
+- Branch: `main`
