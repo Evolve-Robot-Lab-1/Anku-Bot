@@ -8,14 +8,21 @@
  * M4 (BR): EN=4,  IN1=26, IN2=27,  CHA=20, CHB=32
  *
  * Camera Tilt Servos:
- *   Front camera: Pin 9  (TODO: update when wired)
- *   Rear camera:  Pin 10 (TODO: update when wired)
+ *   Front camera: Pin 9
+ *   Rear camera:  Pin 10
+ *
+ * FlySky FS-R6B receiver (pin-change interrupt driven):
+ *   CH1 (rotate):   D12  (PB6, PCINT6)
+ *   CH2 (throttle):  D11  (PB5, PCINT5)
+ *   CH3 (speed):    A8   (PK0, PCINT16)
+ *   CH4 (strafe):   A9   (PK1, PCINT17)
+ *   CH5 (arm/disarm): A10  (PK2, PCINT18)
  *
  * Commands:
  *   F = Forward       B = Backward
  *   L = Strafe Left   R = Strafe Right
  *   W = Rotate Left   U = Rotate Right
- *   S = Stop
+ *   S = Stop (also emergency stop — overrides RF)
  *   1 = Slow (180 t/s)  2 = Medium (250 t/s)  3 = Fast (320 t/s)
  *   P = Print encoder ticks
  *   C = Clear encoder ticks
@@ -23,9 +30,11 @@
  *   G<angle> = Rear camera tilt (0-90 degrees)
  *   CAL = Print calibration factors
  *   CAL,<m1>,<m2>,<m3>,<m4> = Set per-motor PWM scale (0.5-2.0)
+ *   FlySky receiver input is additive and does not replace USB serial control.
  */
 
 #include <Servo.h>
+#include <ctype.h>
 
 // M1 - Front Left
 #define M1_EN   2
@@ -55,9 +64,20 @@
 #define M4_CHA  20
 #define M4_CHB  32
 
-// Camera tilt servo pins (TODO: update when physically wired)
+// Camera tilt servo pins
 #define SERVO_FRONT_PIN  9
 #define SERVO_REAR_PIN   10
+
+// FlySky FS-R6B receiver pins (all PCINT-capable)
+// CH2 moved off D13 (built-in LED attenuates signal)
+// CH3-CH5 moved off D46-D48 (no PCINT support) to A8-A10
+#define RF_CH1_PIN  12   // PB6, PCINT6
+#define RF_CH2_PIN  11   // PB5, PCINT5
+#define RF_CH3_PIN  A8   // PK0, PCINT16
+#define RF_CH4_PIN  A9   // PK1, PCINT17
+#define RF_CH5_PIN  A10  // PK2, PCINT18
+
+#define RF_CHANNELS 5
 
 Servo servoFront;
 Servo servoRear;
@@ -107,6 +127,128 @@ unsigned long calibMeasureStart = 0;
 // Serial input buffer for multi-char commands (T90, G45, etc.)
 char serialBuf[16];
 int serialBufIdx = 0;
+
+enum ControlSource {
+  SRC_NONE = 0,
+  SRC_ROS,
+  SRC_RF
+};
+
+// RF pulse width limits and thresholds
+const uint16_t RF_PULSE_MIN = 900;
+const uint16_t RF_PULSE_MAX = 2100;
+const uint16_t RF_ARM_HIGH_US = 1700;
+const uint16_t RF_ARM_LOW_US = 1300;
+const unsigned long RF_SIGNAL_TIMEOUT_MS = 250;
+const unsigned long RF_ARM_HOLD_MS = 500;
+const unsigned long ROS_ACTIVITY_TIMEOUT_MS = 800;
+const int RF_CENTER_DEADBAND_US = 80;
+const int RF_GLITCH_THRESHOLD_US = 200;
+
+// --- RF interrupt-driven pulse capture (written by ISRs) ---
+volatile uint16_t rfPulseRaw[RF_CHANNELS] = {1500, 1500, 1500, 1500, 1000};
+volatile unsigned long rfRiseTime[RF_CHANNELS] = {0, 0, 0, 0, 0};
+volatile bool rfNewData[RF_CHANNELS] = {false, false, false, false, false};
+volatile uint8_t lastPINB = 0;
+volatile uint8_t lastPINK = 0;
+
+// Filtered RF state (read in main loop)
+uint16_t rfPulseUs[RF_CHANNELS] = {1500, 1500, 1500, 1500, 1000};
+uint16_t rfPulsePrev[RF_CHANNELS] = {1500, 1500, 1500, 1500, 1000};
+unsigned long rfChanLastMs[RF_CHANNELS] = {0, 0, 0, 0, 0};
+
+unsigned long rfLastFramePrintMs = 0;
+unsigned long lastRosCmdMs = 0;
+ControlSource activeSource = SRC_NONE;
+char activeMotionCmd = 'S';
+char lastReportedMotionCmd = '\0';
+bool rfArmed = false;
+bool rfLastArmed = false;
+bool rfSignalPresent = false;
+bool rfLastSignalPresent = false;
+bool rfSeenDisarm = false;
+unsigned long rfArmRequestStartMs = 0;
+
+// --- PCINT0 ISR: Port B — CH1 (PB6/D12), CH2 (PB5/D11) ---
+ISR(PCINT0_vect) {
+  unsigned long now = micros();
+  uint8_t portB = PINB;
+  uint8_t changed = portB ^ lastPINB;
+  lastPINB = portB;
+
+  // CH1 = PB6 (D12)
+  if (changed & (1 << PB6)) {
+    if (portB & (1 << PB6)) {
+      rfRiseTime[0] = now;
+    } else {
+      uint16_t w = (uint16_t)(now - rfRiseTime[0]);
+      if (w >= RF_PULSE_MIN && w <= RF_PULSE_MAX) {
+        rfPulseRaw[0] = w;
+        rfNewData[0] = true;
+      }
+    }
+  }
+
+  // CH2 = PB5 (D11)
+  if (changed & (1 << PB5)) {
+    if (portB & (1 << PB5)) {
+      rfRiseTime[1] = now;
+    } else {
+      uint16_t w = (uint16_t)(now - rfRiseTime[1]);
+      if (w >= RF_PULSE_MIN && w <= RF_PULSE_MAX) {
+        rfPulseRaw[1] = w;
+        rfNewData[1] = true;
+      }
+    }
+  }
+}
+
+// --- PCINT2 ISR: Port K — CH3 (PK0/A8), CH4 (PK1/A9), CH5 (PK2/A10) ---
+ISR(PCINT2_vect) {
+  unsigned long now = micros();
+  uint8_t portK = PINK;
+  uint8_t changed = portK ^ lastPINK;
+  lastPINK = portK;
+
+  // CH3 = PK0 (A8)
+  if (changed & (1 << PK0)) {
+    if (portK & (1 << PK0)) {
+      rfRiseTime[2] = now;
+    } else {
+      uint16_t w = (uint16_t)(now - rfRiseTime[2]);
+      if (w >= RF_PULSE_MIN && w <= RF_PULSE_MAX) {
+        rfPulseRaw[2] = w;
+        rfNewData[2] = true;
+      }
+    }
+  }
+
+  // CH4 = PK1 (A9)
+  if (changed & (1 << PK1)) {
+    if (portK & (1 << PK1)) {
+      rfRiseTime[3] = now;
+    } else {
+      uint16_t w = (uint16_t)(now - rfRiseTime[3]);
+      if (w >= RF_PULSE_MIN && w <= RF_PULSE_MAX) {
+        rfPulseRaw[3] = w;
+        rfNewData[3] = true;
+      }
+    }
+  }
+
+  // CH5 = PK2 (A10)
+  if (changed & (1 << PK2)) {
+    if (portK & (1 << PK2)) {
+      rfRiseTime[4] = now;
+    } else {
+      uint16_t w = (uint16_t)(now - rfRiseTime[4]);
+      if (w >= RF_PULSE_MIN && w <= RF_PULSE_MAX) {
+        rfPulseRaw[4] = w;
+        rfNewData[4] = true;
+      }
+    }
+  }
+}
 
 // --- Encoder ISRs ---
 void isrM1() { if (digitalRead(M1_CHB)) encM1++; else encM1--; }
@@ -197,6 +339,275 @@ void pidUpdate() {
   }
 }
 
+void reportSource(ControlSource src) {
+  if (activeSource == src) return;
+  activeSource = src;
+  Serial.print(">> Control source: ");
+  switch (src) {
+    case SRC_RF: Serial.println("RF"); break;
+    case SRC_ROS: Serial.println("ROS"); break;
+    default: Serial.println("NONE"); break;
+  }
+}
+
+void applyStop(bool announce = false) {
+  stopAll();
+  moving = false;
+  calibrating = false;
+  calibMeasuring = false;
+  targetSpeed = 0;
+  activeMotionCmd = 'S';
+  lastReportedMotionCmd = 'S';
+  pidReset();
+  if (announce) Serial.println(">> Stop");
+}
+
+void setUserSpeedTarget(int newTarget, bool announce = false) {
+  userTarget = newTarget;
+  if (moving && !calibrating) {
+    targetSpeed = userTarget;
+    pidReset();
+  }
+  if (announce) {
+    Serial.print(">> Speed: ");
+    Serial.print(newTarget);
+    if (newTarget == 180) Serial.println(" t/s (slow)");
+    else if (newTarget == 250) Serial.println(" t/s (medium)");
+    else if (newTarget == 320) Serial.println(" t/s (fast)");
+    else Serial.println(" t/s");
+  }
+}
+
+void applyMotionCommand(char cmd, bool announce = false) {
+  char normalized = toupper(cmd);
+
+  if (normalized == 'S') {
+    if (activeMotionCmd != 'S' || moving || calibrating) {
+      applyStop(announce);
+    } else if (announce) {
+      Serial.println(">> Stop");
+    }
+    return;
+  }
+
+  int desired[4] = {0, 0, 0, 0};
+  const char* label = "";
+  switch (normalized) {
+    case 'F':
+      desired[0] = 1; desired[1] = 1; desired[2] = 1; desired[3] = 1;
+      label = "Forward";
+      break;
+    case 'B':
+      desired[0] = -1; desired[1] = -1; desired[2] = -1; desired[3] = -1;
+      label = "Backward";
+      break;
+    case 'L':
+      desired[0] = -1; desired[1] = 1; desired[2] = 1; desired[3] = -1;
+      label = "Strafe Left";
+      break;
+    case 'R':
+      desired[0] = 1; desired[1] = -1; desired[2] = -1; desired[3] = 1;
+      label = "Strafe Right";
+      break;
+    case 'W':
+      desired[0] = -1; desired[1] = 1; desired[2] = -1; desired[3] = 1;
+      label = "Rotate Left";
+      break;
+    case 'U':
+      desired[0] = 1; desired[1] = -1; desired[2] = 1; desired[3] = -1;
+      label = "Rotate Right";
+      break;
+    default:
+      return;
+  }
+
+  bool sameMotion = (activeMotionCmd == normalized && moving);
+  if (sameMotion) {
+    if (announce && normalized != lastReportedMotionCmd) {
+      Serial.print(">> "); Serial.println(label);
+      lastReportedMotionCmd = normalized;
+    }
+    return;
+  }
+
+  motorDir[0] = desired[0];
+  motorDir[1] = desired[1];
+  motorDir[2] = desired[2];
+  motorDir[3] = desired[3];
+  pidReset();
+  targetSpeed = 0;
+  calibrating = true;
+  calibMeasuring = false;
+  calibStartTime = millis();
+
+  for (int i = 0; i < 4; i++) {
+    driveMotor(i, motorDir[i], motorStartPwm(i));
+  }
+  moving = true;
+  activeMotionCmd = normalized;
+  if (announce) {
+    Serial.print(">> "); Serial.println(label);
+    lastReportedMotionCmd = normalized;
+  }
+}
+
+int pulseToAxis(uint16_t pulse) {
+  long centered = (long)pulse - 1500;
+  if (abs(centered) <= RF_CENTER_DEADBAND_US) return 0;
+  return (centered > 0) ? 1 : -1;
+}
+
+int pulseToSpeedTarget(uint16_t pulse) {
+  if (pulse < 1300) return 180;
+  if (pulse > 1700) return 320;
+  return 250;
+}
+
+// Read ISR-captured pulse data into main-loop variables with glitch filtering
+void readRfChannels() {
+  unsigned long now = millis();
+  uint16_t raw[RF_CHANNELS];
+  bool hasNew[RF_CHANNELS];
+
+  noInterrupts();
+  for (int i = 0; i < RF_CHANNELS; i++) {
+    raw[i] = rfPulseRaw[i];
+    hasNew[i] = rfNewData[i];
+    rfNewData[i] = false;
+  }
+  interrupts();
+
+  for (int i = 0; i < RF_CHANNELS; i++) {
+    if (hasNew[i]) {
+      // Glitch filter: accept only if consistent with previous raw reading
+      if (abs((int)raw[i] - (int)rfPulsePrev[i]) <= RF_GLITCH_THRESHOLD_US) {
+        rfPulseUs[i] = raw[i];
+        rfChanLastMs[i] = now;
+      }
+      rfPulsePrev[i] = raw[i];
+    }
+  }
+}
+
+bool isRfSignalFresh() {
+  unsigned long now = millis();
+  // CH5 (arm/disarm) must be fresh
+  if ((now - rfChanLastMs[4]) > RF_SIGNAL_TIMEOUT_MS) return false;
+  // At least one drive channel must be fresh
+  for (int i = 0; i < 4; i++) {
+    if ((now - rfChanLastMs[i]) <= RF_SIGNAL_TIMEOUT_MS) return true;
+  }
+  return false;
+}
+
+bool rfDriveInputsCentered() {
+  return pulseToAxis(rfPulseUs[0]) == 0 &&
+         pulseToAxis(rfPulseUs[1]) == 0 &&
+         pulseToAxis(rfPulseUs[3]) == 0;
+}
+
+char getRfMotionCommand() {
+  int rotate = pulseToAxis(rfPulseUs[0]);
+  int throttle = -pulseToAxis(rfPulseUs[1]);
+  int strafe = -pulseToAxis(rfPulseUs[3]);
+
+  // Rotation takes priority when it's the only input
+  if (rotate != 0) {
+    return (rotate > 0) ? 'U' : 'W';
+  }
+  // When both throttle and strafe active, use raw deviation to pick dominant
+  if (throttle != 0 && strafe != 0) {
+    int tDev = abs((int)rfPulseUs[1] - 1500);
+    int sDev = abs((int)rfPulseUs[3] - 1500);
+    if (tDev > sDev) {
+      return (throttle > 0) ? 'F' : 'B';
+    }
+    return (strafe > 0) ? 'L' : 'R';
+  }
+  if (throttle != 0) {
+    return (throttle > 0) ? 'F' : 'B';
+  }
+  if (strafe != 0) {
+    return (strafe > 0) ? 'L' : 'R';
+  }
+  return 'S';
+}
+
+void processRfControl() {
+  readRfChannels();
+
+  rfSignalPresent = isRfSignalFresh();
+  if (!rfSignalPresent) {
+    rfArmed = false;
+    rfSeenDisarm = false;
+    rfArmRequestStartMs = 0;
+    if (rfLastSignalPresent) {
+      Serial.println(">> RF signal lost");
+    }
+    rfLastSignalPresent = false;
+    if (activeSource == SRC_RF) {
+      applyStop(true);
+      reportSource(SRC_NONE);
+    }
+    return;
+  }
+
+  rfLastSignalPresent = true;
+
+  uint16_t armPulse = rfPulseUs[4];
+  unsigned long nowMs = millis();
+
+  if (armPulse < RF_ARM_LOW_US) {
+    rfSeenDisarm = true;
+    rfArmed = false;
+    rfArmRequestStartMs = 0;
+  } else if (armPulse > RF_ARM_HIGH_US) {
+    if (!rfSeenDisarm) {
+      rfArmed = false;
+      rfArmRequestStartMs = 0;
+    } else if (!rfDriveInputsCentered()) {
+      rfArmed = false;
+      rfArmRequestStartMs = 0;
+    } else {
+      if (rfArmRequestStartMs == 0) {
+        rfArmRequestStartMs = nowMs;
+      }
+      if ((nowMs - rfArmRequestStartMs) >= RF_ARM_HOLD_MS) {
+        rfArmed = true;
+      }
+    }
+  } else {
+    rfArmed = false;
+    rfArmRequestStartMs = 0;
+  }
+
+  if (rfArmed != rfLastArmed) {
+    Serial.println(rfArmed ? ">> RF armed" : ">> RF disarmed");
+    rfLastArmed = rfArmed;
+  }
+
+  if (!rfArmed) {
+    if (activeSource == SRC_RF) {
+      applyStop(true);
+      reportSource(SRC_NONE);
+    }
+    return;
+  }
+
+  reportSource(SRC_RF);
+  setUserSpeedTarget(pulseToSpeedTarget(rfPulseUs[2]));
+  applyMotionCommand(getRfMotionCommand());
+
+  if (millis() - rfLastFramePrintMs >= 1000) {
+    rfLastFramePrintMs = millis();
+    Serial.print(">> RF frame ch1="); Serial.print(rfPulseUs[0]);
+    Serial.print(" ch2="); Serial.print(rfPulseUs[1]);
+    Serial.print(" ch3="); Serial.print(rfPulseUs[2]);
+    Serial.print(" ch4="); Serial.print(rfPulseUs[3]);
+    Serial.print(" ch5="); Serial.println(rfPulseUs[4]);
+  }
+}
+
 void calibUpdate() {
   unsigned long now = millis();
 
@@ -268,19 +679,6 @@ void calibUpdate() {
   }
 }
 
-void startMove(int d1, int d2, int d3, int d4) {
-  motorDir[0] = d1; motorDir[1] = d2; motorDir[2] = d3; motorDir[3] = d4;
-  pidReset();
-  targetSpeed = 0;
-  calibrating = true;
-  calibMeasuring = false;
-  calibStartTime = millis();
-
-  for (int i = 0; i < 4; i++)
-    driveMotor(i, motorDir[i], motorStartPwm(i));
-  moving = true;
-}
-
 void printSpeed() {
   Serial.print("Spd ");
   for (int i = 0; i < 4; i++) {
@@ -325,6 +723,8 @@ void processSerialLine(char* buf, int len) {
   if (len == 0) return;
 
   char cmd = buf[0];
+  char normalized = toupper(cmd);
+  bool rfOwnsDrive = rfSignalPresent && rfArmed && activeSource == SRC_RF;
 
   // Multi-char commands: T<angle>, G<angle>
   if ((cmd == 'T' || cmd == 't') && len > 1) {
@@ -390,57 +790,77 @@ void processSerialLine(char* buf, int len) {
   }
 
   // Single-char commands
-  switch (cmd) {
-    case 'F': case 'f':
-      startMove(1, 1, 1, 1);
-      Serial.println(">> Forward");
+  switch (normalized) {
+    case 'F':
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      applyMotionCommand('F', true);
       break;
-    case 'B': case 'b':
-      startMove(-1, -1, -1, -1);
-      Serial.println(">> Backward");
+    case 'B':
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      applyMotionCommand('B', true);
       break;
-    case 'L': case 'l':
-      startMove(-1, 1, 1, -1);
-      Serial.println(">> Strafe Left");
+    case 'L':
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      applyMotionCommand('L', true);
       break;
-    case 'R': case 'r':
-      startMove(1, -1, -1, 1);
-      Serial.println(">> Strafe Right");
+    case 'R':
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      applyMotionCommand('R', true);
       break;
-    case 'W': case 'w':
-      startMove(-1, 1, -1, 1);
-      Serial.println(">> Rotate Left");
+    case 'W':
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      applyMotionCommand('W', true);
       break;
-    case 'U': case 'u':
-      startMove(1, -1, 1, -1);
-      Serial.println(">> Rotate Right");
+    case 'U':
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      applyMotionCommand('U', true);
       break;
-    case 'S': case 's':
-      stopAll();
-      moving = false;
-      calibrating = false;
-      pidReset();
-      Serial.println(">> Stop");
+    case 'S':
+      // Emergency stop always works — overrides RF for safety
+      lastRosCmdMs = millis();
+      if (rfOwnsDrive) {
+        rfArmed = false;
+        rfSeenDisarm = false;
+        rfArmRequestStartMs = 0;
+        Serial.println(">> ROS emergency stop - RF disarmed");
+      }
+      reportSource(SRC_ROS);
+      applyStop(true);
       break;
     case '1':
-      userTarget = 180;
-      if (moving && !calibrating) { targetSpeed = userTarget; pidReset(); }
-      Serial.println(">> Speed: 180 t/s (slow)");
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      setUserSpeedTarget(180, true);
       break;
     case '2':
-      userTarget = 250;
-      if (moving && !calibrating) { targetSpeed = userTarget; pidReset(); }
-      Serial.println(">> Speed: 250 t/s (medium)");
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      setUserSpeedTarget(250, true);
       break;
     case '3':
-      userTarget = 320;
-      if (moving && !calibrating) { targetSpeed = userTarget; pidReset(); }
-      Serial.println(">> Speed: 320 t/s (fast)");
+      if (rfOwnsDrive) return;
+      lastRosCmdMs = millis();
+      reportSource(SRC_ROS);
+      setUserSpeedTarget(320, true);
       break;
-    case 'P': case 'p':
+    case 'P':
       printEncoders();
       break;
-    case 'C': case 'c':
+    case 'C':
       clearEncoders();
       break;
   }
@@ -459,10 +879,26 @@ void setup() {
   pinMode(M3_CHA, INPUT_PULLUP); pinMode(M3_CHB, INPUT_PULLUP);
   pinMode(M4_CHA, INPUT_PULLUP); pinMode(M4_CHB, INPUT_PULLUP);
 
+  // RF receiver pins with pull-up (pin stays HIGH when disconnected = safe)
+  pinMode(RF_CH1_PIN, INPUT_PULLUP);
+  pinMode(RF_CH2_PIN, INPUT_PULLUP);
+  pinMode(RF_CH3_PIN, INPUT_PULLUP);
+  pinMode(RF_CH4_PIN, INPUT_PULLUP);
+  pinMode(RF_CH5_PIN, INPUT_PULLUP);
+
   attachInterrupt(digitalPinToInterrupt(M1_CHA), isrM1, RISING);
   attachInterrupt(digitalPinToInterrupt(M2_CHA), isrM2, RISING);
   attachInterrupt(digitalPinToInterrupt(M3_CHA), isrM3, RISING);
   attachInterrupt(digitalPinToInterrupt(M4_CHA), isrM4, RISING);
+
+  // Capture initial port states for PCINT edge detection
+  lastPINB = PINB;
+  lastPINK = PINK;
+
+  // Enable pin-change interrupts for RF receiver
+  PCMSK0 |= (1 << PCINT5) | (1 << PCINT6);       // PB5(D11), PB6(D12)
+  PCMSK2 |= (1 << PCINT16) | (1 << PCINT17) | (1 << PCINT18);  // PK0(A8), PK1(A9), PK2(A10)
+  PCICR  |= (1 << PCIE0) | (1 << PCIE2);          // Enable PCINT0 + PCINT2 vectors
 
   // Attach camera tilt servos and set to 0 (level)
   servoFront.attach(SERVO_FRONT_PIN);
@@ -474,6 +910,7 @@ void setup() {
   Serial.println("=== Mecanum PID + Servo Tilt ===");
   Serial.println("F/B/L/R/W/U/S  1=180 2=250 3=320  P=Ticks C=Clear");
   Serial.println("T<0-90>=Front tilt  G<0-90>=Rear tilt  CAL=Show/set cal");
+  Serial.println("FlySky RF (PCINT): CH1=rot(D12) CH2=thr(D11) CH3=spd(A8) CH4=str(A9) CH5=arm(A10)");
   Serial.print(">> Motor cal: ");
   for (int i = 0; i < 4; i++) {
     Serial.print("M"); Serial.print(i + 1); Serial.print("="); Serial.print(motorCal[i], 2); Serial.print("("); Serial.print(motorStartPwm(i)); Serial.print(") ");
@@ -482,6 +919,8 @@ void setup() {
 }
 
 void loop() {
+  processRfControl();
+
   // Read serial into buffer, process on newline
   while (Serial.available()) {
     char c = Serial.read();
@@ -494,6 +933,12 @@ void loop() {
     } else if (serialBufIdx < 15) {
       serialBuf[serialBufIdx++] = c;
     }
+  }
+
+  if (activeSource == SRC_ROS && !rfSignalPresent &&
+      (millis() - lastRosCmdMs) > ROS_ACTIVITY_TIMEOUT_MS &&
+      activeMotionCmd == 'S') {
+    reportSource(SRC_NONE);
   }
 
   if (moving && calibrating) {
