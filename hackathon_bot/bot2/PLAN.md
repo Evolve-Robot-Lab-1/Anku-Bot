@@ -1,14 +1,55 @@
 # Bot 2 — Raspberry Pi 4B and Adeept Robot HAT V3.3
 
-Status (2026-10-08): Pi SSH + HAT PCA9685 verified; HAT M4 port dead;
-base now runs on a Mega 2560 + 2x external drivers (Bot1 pin map).
+Status (2026-10-09): Pi SSH + HAT PCA9685 verified; HAT M4 port dead;
+base runs on a Mega 2560 + 2x external drivers. Bot 2 logical-forward
+firmware is flashed and verified. Last confirmed HAT readback had CH0/CH1 at
+vendor nominal 0° (500 us, 50 Hz), and CH2–CH15 off. A subsequent CH1
+0°→180° command was interrupted before its result returned; the user reported
+"all good," but current CH1 pulse is unverified because the Pi is temporarily
+unreachable. See SESSION_NOTES.md for the session checkpoint before another
+servo command.
 See SESSION_NOTES.md "Bot 2 Mega base" for the verified state.
 
 ## Confirmed hardware
 
 - Raspberry Pi 4B (user confirmed).
 - Adeept Robot HAT V3.3 (user confirmed). Four DC motor ports M1–M4 are available on the HAT.
-- Other Bot 2 devices, motor voltage/current, wheel mapping, encoders, OS, and access details are still unknown.
+- Pi runs Ubuntu 24.04 and is reached as `sanjeev@192.168.1.10` on the current Wi-Fi network. The Mega is on `/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0` when connected.
+- Mega encoder A/B inputs respond on all four motors. Motor voltage/current and encoder counts per wheel revolution remain unknown.
+
+## Current Mega wheel direction map
+
+User-confirmed on 2026-10-09 with one-second individual `M1F`–`M4F` pulses:
+
+| Mega motor | Wheel | Physical rotation for firmware `F` |
+| --- | --- | --- |
+| M1 | Front right | Forward |
+| M2 | Front left | Backward |
+| M3 | Rear left | Backward |
+| M4 | Rear right | Forward |
+
+The previous all-motor `F` command applied the same electrical polarity to
+every motor. The Bot 2 firmware at `bot2/arduino/bot2_four_motor/` now uses
+M1/M4 electrical F and M2/M3 electrical R for logical `F`; logical `R`
+inverts all four. Individual `M1F`–`M4R` commands retain their raw electrical
+meaning. A one-second raised-wheel `F` test auto-stopped with encoder signs
+`+/-/-/+`, and the user confirmed all four wheels physically rotated forward.
+A one-second `R` test auto-stopped with the inverse encoder signs `-/+/+/-`;
+physical reverse observation is pending. The current V8 firmware has `F2` and
+`R2`, two-second logical forward/reverse pulses at PWM 110 for ground checks.
+The user confirmed the second forward ground run worked well. The first `R2`
+ground run auto-stopped and received an explicit `STOP`; physical reverse
+travel awaits the user's observation. V6 also has `TR1` and `TL1`, one-second
+PWM 110 turns in place using opposite directions on left and right wheels.
+Both turn ground tests auto-stopped with all four encoder signals present; the
+user confirmed the left turn worked. V8 has one- and two-second PWM 140 lateral
+`SR1`/`SL1`/`SR2`/`SL2` commands for the conventional X-roller pattern. The
+one-second `SR1` test gave only 177 M1 edges versus 477–529 on the other
+wheels. The two-second `SR2` retry auto-stopped with M1 at 1284 edges versus
+1421–1566 on the others. The two-second `SL2` test also auto-stopped, with
+encoder signs inverse to `SR2`. The user confirmed physical rightward motion
+on an `SR2` repeat. A second `SL2` test auto-stopped; physical leftward motion
+awaits the user's report.
 
 ## Control architecture
 
