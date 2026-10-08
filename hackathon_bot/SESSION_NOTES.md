@@ -422,3 +422,237 @@ Next pending checks: L2 input mapping, then gamepad disconnect behavior and arm-
 - Event access: Bot1 `sanjeev@192.168.1.8`, Bot2 `sanjeev@192.168.1.10` (DHCP,
   may change; try `hackathon-bot2.local`). Same Wi-Fi as SPC event network.
   New PC must `ssh-copy-id` its key to both Pis; do NOT copy private keys.
+
+## Bot 2 HAT servo session — 2026-10-08/09
+
+- CH0 neutral hold, stepped 0→180°, 3-cycle sine radar on CH0 / CH0+1 / CH0+1+2,
+  then CH0–7 to 0° hold at 50 Hz. Single-position moves on CH1/CH2 after:
+  0/90/180 verified, CH2 220° and 270° (~2500 us) held per user confirm
+  (270°-class servo). 300° (~2667 us) and 360° (~3000 us) REFUSED: past the
+  confirmed 270° max, end-stop stall/strip risk. HAT left at 50 Hz holding
+  CH0–7 at 0° (CH2 last at 0°); motors zero. Restore PRE `0x1E` before HAT
+  motor runs. All moves eased with auto-hold; exits 0 throughout.
+
+## Bot 1 live checks — 2026-10-09
+
+- Pi 5 SSH at `192.168.1.8`; Mega on `/dev/ttyACM0` reported
+  `READY,BOT1_ARM_BASE2_V14` and PCA9685 at `0x41`. No firmware upload.
+- Individual two-second PWM 100 tests stopped automatically and received an
+  explicit `BASESTOP`: M1 1,966 A edges, M2 2,228, M3 2,012, M4 2,099.
+  Only the commanded motor's A count advanced in each test. M2 B stayed HIGH
+  at all 2,228 A edges, so its signed direction count was unusable.
+- A subsequent all-four `DRIVE2` completed its two-second timeout and explicit
+  `BASESTOP`: M1 2,005, M2 2,153, M3 2,047, M4 2,093 A edges. M2 B again
+  stayed HIGH at every A edge; the other three B signals were balanced.
+  User had said the first all-four pulse showed no visible motor motion;
+  physical observation of the later individual/all-four pulses is pending.
+- Arm: CH1 was ramped from saved 60° to 210° (2165 us), then tested
+  210°→220°→210° (2165→2220→2165 us). CH11 was tested
+  60°→120°→0°→120° (1335→1667→1000→1667 us). CH6/CH7 received a one-second
+  suction command and a one-second release command, followed by `GRIPOFF`.
+  Mega acknowledged commands; physical movement/suction feedback is pending.
+  Final `STATUS`: CH0 2165 us, CH1 2165 us, CH11 1667 us holding; base stopped.
+- Logitech C270 captured 640×480 frames. Startup frame was dark; after warmup,
+  a clear frame had grayscale mean 126.0 and standard deviation 35.8, saved on
+  Pi as `/tmp/bot1-camera-check-warm.jpg` and PC as the same path.
+- Later, user confirmed visible CH11 motion during a repeated gradual
+  120°→0°→120° test. Final hold was CH11 1667 us; CH0/CH1 held 2165 us,
+  gripper off, base stopped.
+- User requested a straight base run. CH1 and CH11 were gradually moved to the
+  firmware-required rest 1335/1335 us, `DRIVE2` ran for 2000 ms, then explicit
+  `BASESTOP` was acknowledged. A edges: M1 658, M2 943, M3 1356, M4 767.
+  Final measured rates were 750/770/1020/740 edges/s, all at PWM 140 limit;
+  this did not meet the 1100 edges/s target or prove straight travel. M2 and M3
+  B samples were uneven. CH1/CH11 were returned gradually to 2165/1667 us;
+  final `STATUS` confirmed CH0/CH1/CH11 holds 2165/2165/1667, gripper off,
+  base stopped. Physical travel observation is pending.
+
+## Bot 2 Mega motor check — 2026-10-09
+
+- Bot 2 Pi SSH `192.168.1.10`; CH340 Mega reappeared at `/dev/ttyUSB0`
+  (stable `/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0`). It reported
+  `READY,FOUR_MOTOR_PCA_ARM`, `STOPPED`, and PCA `NOT_FOUND` as expected.
+- User confirmed wheels clear and power stop accessible. One-second PWM 200
+  individual F pulses all reached automatic `STOPPED,TIMEOUT` and received
+  explicit `STOP`: M1 1,693 A edges, M2 1,703, M3 1,610, M4 1,703.
+  B high/low samples were balanced on each commanded motor.
+- During the M2-only pulse, M1 also registered 302 A edges, with balanced B
+  samples. Other off-target motors stayed at zero. A separate five-second idle
+  check after encoder reset showed zero edges on all motors, and M3-only and
+  M4-only pulses had zero off-target counts. The cause of M1 activity during
+  M2 operation is unresolved; visual confirmation of which wheels moved is
+  pending. No all-four pulse was run after this finding.
+- User-requested M1/M2 rerun, same one-second PWM 200 pulses: M1 1,692 A
+  edges with all other motors zero; M2 1,704 A edges with M1/M3/M4 all zero.
+  Both B high/low counts were exactly balanced, both pulses auto-stopped, and
+  explicit STOP was acknowledged. The M1 cross-count during the first M2 run
+  did not recur in this retest; physical wheel observation is still pending.
+- User-requested all-four `F` pulse at PWM 200 for one second auto-stopped and
+  received explicit `STOP`. A edges M1 1,685, M2 1,701, M3 1,618, M4 1,702;
+  B high/low at A edges were 842/843, 851/850, 809/809, 851/851. All four
+  signals were balanced in this simultaneous run. Physical direction and
+  straightness still require user observation.
+- Bot 2 physical direction mapping started one motor at a time. User identified
+  M1 as the front-right wheel and confirmed `M1F` spins it in the robot's
+  forward-driving direction. Its repeat pulse produced 1,691 A edges, with
+  all other wheels at zero. User corrected M2 identification to front left
+  (an initial rear-right description was retracted) and confirmed `M2F` spins
+  it backward. Multiple M2F repeats were isolated; latest 1,707 A edges,
+  other wheels zero. User identified M3 as rear left and confirmed `M3F`
+  spins it backward; its repeat produced 1,619 A edges, others zero. M4F
+  direction-identification pulse produced 1,703 A edges, others zero; user
+  identified it as rear right and confirmed `M4F` spins it forward.
+- Confirmed Bot 2 physical mapping for the current Mega `F` polarity:
+  M1 front right/forward, M2 front left/backward, M3 rear left/backward,
+  M4 rear right/forward. At this stage, the old all-motor firmware `F` was not
+  chassis straight forward. A logical straight-forward command had to reverse
+  M2 and M3 relative to M1 and M4; the firmware update below implements this.
+
+## Bot 2 logical-forward firmware — 2026-10-09
+
+- Created Bot 2-specific source `bot2/arduino/bot2_four_motor/bot2_four_motor.ino`
+  from the verified four-motor test firmware. `F` now commands mixed electrical
+  polarities M1 F, M2 R, M3 R, M4 F; `R` inverts them. Individual `M1F`–`M4R`
+  retain raw electrical polarity. The 1-second PWM 200 timeout, STOP, encoder
+  reporting, and startup motor-off behavior are unchanged.
+- Compiled for Mega 2560 (15,424 flash bytes). Backed up prior Mega flash on
+  Bot 2 Pi to `~/bot2/pre_logical_forward_20261009.hex`, then uploaded
+  `~/bot2/bot2_logical_v1.hex`; AVRDUDE verified all 15,424 bytes. Banner is
+  `READY,BOT2_LOGICAL_BASE_V1`. Post-flash `STATUS` was `STOPPED`.
+- One `F` raised-wheel pulse completed the automatic one-second timeout and
+  explicit STOP. Encoder ticks/A edges were M1 +1690/1690, M2 -1713/1713,
+  M3 -1624/1624, M4 +1700/1700; all B high/low samples were balanced. User
+  confirmed all four wheels physically rotated forward. A subsequent `R`
+  pulse also auto-stopped and received explicit STOP, with opposite signed
+  ticks M1 -1708, M2 +1705, M3 +1616, M4 -1711 and balanced B samples.
+  Physical reverse observation is pending. Floor straightness remains untested.
+
+## Bot 2 first two-second ground pulse — 2026-10-09
+
+- Added a separate `F2` logical-forward command to the Bot 2 sketch: PWM 120,
+  2000 ms automatic timeout. The original `F`/`R` and individual commands
+  remain one-second PWM 200 bench pulses. Compiled V2 (15,600 flash bytes),
+  uploaded as Pi `~/bot2/bot2_logical_v2_ground.hex`, and AVRDUDE verified all
+  bytes. V1 remains on Pi as `~/bot2/bot2_logical_v1.hex`. Banner is
+  `READY,BOT2_LOGICAL_BASE_V2`; pre-run STATUS was STOPPED.
+- With Bot 2 on the ground, ran one `F2` pulse. Firmware reported
+  `START,GROUND,F,PWM120,2000MS`, automatic `STOPPED,TIMEOUT`, and explicit
+  STOP. Encoder ticks/A edges: M1 +1517/1517, M2 -2087/2087,
+  M3 -1878/1878, M4 +1733/1733; B high/low samples were balanced on all four.
+  Count spread was substantial under load; visual straightness and travel
+  distance are pending the user's observation.
+- At user's request, reduced only `F2` from PWM 120 to PWM 110 (V3); bench
+  commands stay PWM 200/1 s. Compiled 15,600 bytes, flashed Pi
+  `~/bot2/bot2_logical_v3_ground.hex`, AVRDUDE verified, and banner confirmed
+  `READY,BOT2_LOGICAL_BASE_V3`. The two-second PWM 110 ground rerun auto-stopped
+  and received explicit STOP. A edges/ticks were M1 +1834, M2 -1972,
+  M3 -1992, M4 +1880; all B high/low samples were exactly balanced. The count
+  spread was smaller than in the PWM 120 run. The user confirmed the forward
+  ground run worked well.
+- Added matching low-speed `R2` for two-second PWM 110 logical reverse in V4;
+  compiled 15,632 bytes, flashed Pi `~/bot2/bot2_logical_v4_ground.hex`, and
+  AVRDUDE verified all bytes. A ground `R2` pulse reported
+  `START,GROUND,R,PWM110,2000MS` and `STOPPED,TIMEOUT`; an explicit `STOP` and
+  `STATUS` both reported `STOPPED`. The test script did not retain the encoder
+  lines from this run. Physical reverse travel awaits the user's observation.
+- Added `TR1` to V5 for a right turn in place: left M2/M3 logical forward,
+  right M1/M4 logical reverse, PWM 110 for 1000 ms. Compiled 15,942 bytes,
+  flashed Pi `~/bot2/bot2_logical_v5_turn.hex`, and AVRDUDE verified all bytes.
+  The ground pulse reported `START,TURN,RIGHT,PWM110,1000MS`, automatic
+  `STOPPED,TIMEOUT`, and explicit `STOPPED` twice. Encoder ticks/A edges were
+  M1 -759/759, M2 -663/663, M3 -909/909, M4 -945/945; all B samples were
+  balanced. Physical right-turn observation awaits the user's confirmation.
+- Added matching `TL1` to V6 for a left turn in place: right M1/M4 logical
+  forward, left M2/M3 logical reverse, PWM 110 for 1000 ms. Compiled 16,032
+  bytes, flashed Pi `~/bot2/bot2_logical_v6_turn.hex`, and AVRDUDE verified.
+  The ground pulse reported `START,TURN,LEFT,PWM110,1000MS`, automatic
+  `STOPPED,TIMEOUT`, and explicit `STOPPED` twice. Encoder ticks/A edges were
+  M1 +703/703, M2 +961/961, M3 +908/908, M4 +776/776; B samples were
+  balanced. The user confirmed the left turn worked.
+- Added V7 lateral `SR1`/`SL1` commands using the conventional X-roller
+  mecanum pattern, PWM 140 for 1000 ms. Compiled 16,380 bytes, flashed Pi
+  `~/bot2/bot2_logical_v7_lateral.hex`, and AVRDUDE verified. The first
+  ground `SR1` pulse reported `START,LATERAL,RIGHT,PWM140,1000MS`, automatic
+  `STOPPED,TIMEOUT`, and explicit `STOPPED` twice. Encoder ticks/A edges were
+  M1 -177/177, M2 -477/477, M3 +482/482, M4 +529/529; B samples were
+  balanced. M1 travelled substantially less than the other wheels. Actual
+  rightward motion awaits the user's observation; `SL1` has not been run.
+- At the user's request, V8 added two-second `SR2`/`SL2` lateral commands,
+  keeping PWM 140 and the one-second commands. Compiled 16,488 bytes, flashed
+  Pi `~/bot2/bot2_logical_v8_lateral.hex`, and AVRDUDE verified. The `SR2`
+  ground retry reported `START,LATERAL,RIGHT,PWM140,2000MS`, automatic
+  `STOPPED,TIMEOUT`, and explicit `STOPPED` twice. Encoder ticks/A edges were
+  M1 -1284/1284, M2 -1566/1566, M3 +1421/1421, M4 +1450/1450; all B samples
+  were balanced. M1 was closer to the other wheels than in the one-second
+  test. Physical sideways motion awaits the user's observation.
+- Ran the matching two-second PWM 140 `SL2` ground pulse without another
+  firmware change. It reported `START,LATERAL,LEFT,PWM140,2000MS`, automatic
+  `STOPPED,TIMEOUT`, and explicit `STOPPED` twice. Encoder ticks/A edges were
+  M1 +1609/1609, M2 +2068/2068, M3 -1872/1872, M4 -1994/1994; B samples
+  were balanced. Physical leftward motion awaits the user's observation.
+- At the user's request, repeated the two-second PWM 140 `SR2` pulse. It
+  auto-stopped and received explicit STOP/STATUS confirmations. Encoder
+  ticks/A edges were M1 -1696/1696, M2 -2002/2002, M3 +1620/1620,
+  M4 +2081/2081, with balanced B samples. The user confirmed physical
+  rightward motion.
+- After clarifying the requested direction, repeated two-second PWM 140
+  `SL2`. It reported `START,LATERAL,LEFT,PWM140,2000MS`, automatic
+  `STOPPED,TIMEOUT`, and explicit STOP/STATUS confirmations. Encoder ticks/A
+  edges were M1 +1628/1628, M2 +1949/1949, M3 -1894/1894, M4 -1969/1969;
+  B samples were balanced. Physical leftward motion awaits the user's report.
+
+## Bot 2 session checkpoint and HAT servo CH0 — 2026-10-09
+
+- Bot 2 Mega remains on verified V8 firmware, with base commands `F2/R2`
+  (2 s PWM 110), `TR1/TL1` (1 s PWM 110), and `SR1/SL1/SR2/SL2`
+  (1/2 s PWM 140). All logged runs auto-stopped, and the latest lateral-left
+  run also received explicit STOP/STATUS confirmations. User confirmed forward,
+  left turn, and lateral-right travel; physical reverse, right-turn, and
+  lateral-left observations were not explicitly confirmed in this record.
+- User moved on to Bot 2's Adeept HAT servo tests, one channel at a time.
+  Read-only I2C probe found only PCA9685 `0x5f` among `0x40/0x41/0x5f`.
+  Before actuation, HAT MODE1 was `0x11`, MODE2 `0x04`, prescale `0x1e`, and
+  all 16 outputs were full-off. `i2cdetect` and Python `smbus` packages were
+  absent, so stdlib `fcntl` I2C access was used.
+- At user request, set HAT CH0 to Adeept vendor nominal 0°: 500 us at 50 Hz,
+  PCA9685 off count 102. Script is `bot2/hat_servo_ch0_zero.py`, copied to Pi
+  `~/bot2/hat_servo_ch0_zero.py`. Post-command readback was MODE1 `0x21`,
+  MODE2 `0x04`, prescale `0x79`, CH0 `[0,0,102,0]`; CH1–CH15 remained
+  full-off. Physical CH0 position/motion awaits user observation.
+- At user request, gradually moved HAT CH0 from nominal 0° to nominal 180°
+  using the Adeept 500–2400 us mapping at 50 Hz, one degree every 20 ms.
+  Script is `bot2/hat_servo_ch0_to_180.py`, copied to Pi. It verified CH0's
+  0° starting readback and that CH1–CH15 were off before moving. It reported
+  `HOLDING,CH0,DEG180,PULSE2400US,COUNT492`; readback was MODE1 `0x21`,
+  prescale `0x79`, CH0 `[0,0,236,1]`. CH0 PWM is now holding nominal 180°;
+  base motors remain stopped. Physical CH0 position awaits user confirmation.
+  Do not change HAT frequency or drop CH0 hold without checking support.
+- At user request, gradually returned HAT CH0 from nominal 180° to 0° using
+  one-degree steps every 20 ms. Script `bot2/hat_servo_ch0_to_0.py` verified
+  the 180° starting readback and all other outputs off before moving. It
+  reported `HOLDING,CH0,DEG0,PULSE500US,COUNT102`; final readback was MODE1
+  `0x21`, prescale `0x79`, CH0 `[0,0,102,0]`. CH0 now holds nominal 0°.
+- At user request, set HAT CH1 to vendor nominal 0° with isolated script
+  `bot2/hat_servo_ch1_zero.py`. It verified CH0 still held 0° and CH2–CH15
+  were off before enabling CH1. Readback confirmed CH0 and CH1 both
+  `[0,0,102,0]` at prescale `0x79` (50 Hz). Both channels now hold nominal
+  0°; physical CH1 position awaits user observation.
+- Interpreted the user's request for a slanting position as CH1 nominal 45°.
+  Script `bot2/hat_servo_ch1_to_45.py` verified CH0/CH1 at 0° and CH2–CH15
+  off, then stepped CH1 by one nominal degree every 30 ms. It reported
+  `HOLDING,CH1,DEG45,PULSE975US,COUNT200`; readback was CH0 `[0,0,102,0]`,
+  CH1 `[0,0,200,0]`, prescale `0x79`. CH1 now holds nominal 45°; physical
+  slant awaits user observation.
+- User asked to keep CH1 at zero. Script `bot2/hat_servo_ch1_to_0.py` moved
+  it gradually from nominal 45° back to 0° and read back CH0/CH1 both
+  `[0,0,102,0]` at prescale `0x79`. Both CH0 and CH1 now hold nominal 0°.
+- User then requested CH1 nominal 180°. Prepared
+  `bot2/hat_servo_ch1_to_180.py` to check the recorded CH0/CH1 zero holds,
+  keep CH2–CH15 off, and move CH1 from 0° to 180° in 20 ms steps. The script
+  was copied to Pi `~/bot2/hat_servo_ch1_to_180.py`. Its remote execution was
+  interrupted before output was returned, so completion and final CH1 pulse
+  were not electronically confirmed. The user subsequently reported "all
+  good" and asked to save the session. A read-only verification attempt then
+  failed with `No route to host` for `192.168.1.10`. Last confirmed HAT
+  readback remains CH0/CH1 both nominal 0°; actual current CH1 state needs
+  a fresh read when the Pi is reachable. No further motion was commanded.
